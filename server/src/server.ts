@@ -26,7 +26,28 @@ httpserver.listen( 3001 , ()=>{
     console.log("listening on port 3001")
 })
 
-io.on('connetion',(socket)=>{
+io.on('connection',(socket)=>{
     redis.set('test','hi')
     redis.get('test').then(val=>{console.log('redis value: ',val)})
+})
+
+io.on('connection',(socket)=>{
+
+    socket.on('createRoom',async({name}:{name:string})=>{
+        const code = await createRoom(name, socket.id)
+        socket.join(code);
+        socket.emit('roomCreated',{code});
+
+        console.log(`room created ${code} by ${name}`)
+    })
+    socket.on('joinRoom',async({name,code}: {name:string , code:string})=>{
+        const room = await joinRoom(name,code,socket.id)
+        if(!room){
+            socket.emit('error', {message:"room not found"})
+            return 
+        }
+    })
+    socket.on('disconnect',async()=>{
+        console.log(`disconnected ${socket.id}`)
+    })
 })
