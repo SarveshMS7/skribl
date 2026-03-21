@@ -10,7 +10,7 @@ const httpserver = createServer(app);
 //need to explicitly allow the cross origin request as browser blocks it by default as the frontend and backend run on different ports.
 const io = new Server(httpserver,{
     cors:{
-        origin: "https://localhost:5173",
+        origin: "http://localhost:5173",
         methods: ['GET' , 'POST']
     }
 });
