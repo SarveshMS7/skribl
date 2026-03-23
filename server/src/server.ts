@@ -14,22 +14,11 @@ const io = new Server(httpserver,{
         methods: ['GET' , 'POST']
     }
 });
-
-io.on('connection', (socket)=>{
-    console.log(`connected ${socket}`);
-    io.on('disconneted',(reason:string)=>{
-        console.log(`disconnected ${socket.id} because ${reason}`);
-    })
-})
-
+ 
 httpserver.listen( 3001 , ()=>{
     console.log("listening on port 3001")
 })
-
-io.on('connection',(socket)=>{
-    redis.set('test','hi')
-    redis.get('test').then(val=>{console.log('redis value: ',val)})
-})
+ 
 
 io.on('connection',(socket)=>{
 
@@ -49,5 +38,10 @@ io.on('connection',(socket)=>{
     })
     socket.on('disconnect',async()=>{
         console.log(`disconnected ${socket.id}`)
+        const code = await redis.get(`player:${socket.id}`)
+        if(code){
+            await removePlayer(code,socket.id);
+            await redis.del(`player:${socket.id}`)
+        }
     })
 })
