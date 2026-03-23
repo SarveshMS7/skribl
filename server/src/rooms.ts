@@ -8,7 +8,7 @@ export interface Player{
 export interface Room{
     hostId:string;
     status: 'playing' | 'waiting';
-    players: Player[]
+    players: Player[],
 }
 
 function generateroom(): string{
@@ -27,38 +27,57 @@ export async function createRoom(hostId:string , hostName:string) :Promise<strin
         hostId,
         status: 'waiting',
         players:[{id:hostId, name:hostName}]
+        
     }
     await redis.set(`room ${hostId} `, JSON.stringify(code) );
     return code;
 }
 
 export async function joinRoom(code:string ,playerId:string , playerName:string): Promise<Room | null>{
+
     const join = await redis.get(` rooms ${code}`)
-
+    
     if(!join)return null;
-
+    
     const room: Room = JSON.parse(join)
-
+    //check if full
+    if(room.players.length>=gamesetting.maxmembers){
+        return null;
+    }
+    //else
     room.players.push({id:playerId , name: playerName })
 
     await redis.set(`room ${code}`,JSON.stringify(room));
     return room;
 }
 
-export async function removePlayer(hostId:string, code:string, playerId:string): Promise<void>{
-    const val = await redis.get(`room ${code}`)
+export async function removePlayer(code:string, playerId:string): Promise<void>{
+    const val = await redis.get(`room:${code}`)
 
     if(!val)return;
     const room: Room = JSON.parse(val)
-
+    //check for every player    keep them only of p id is not equal to playerID   remove players whose id dont match
     room.players = room.players.filter(p=>p.id !== playerId)
 
     if(room.players.length==0){
-        await redis.del(` ${code}`)
+        await redis.del(`room:${code}`)
     }
     else{
-        await redis.set(`${code}`, JSON.stringify(room));
+        await redis.set(`room:${code}`, JSON.stringify(room));
     }
+    // if the host is removed then make the next one in the array the host
+    if(room.hostId == playerId){
+        room.hostId = room.players[0].id
+    }
+
+    await redis.set(`room:${code}`, JSON.stringify(room));
+
+}
+/// check this 
+export const gamesetting = {
+    drawtime:1,
+    maxmembers:5,
+    rounds:3
 }
 
 
