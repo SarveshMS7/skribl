@@ -29,13 +29,13 @@ export async function createRoom(hostId:string , hostName:string) :Promise<strin
         players:[{id:hostId, name:hostName}]
         
     }
-    await redis.set(`room ${hostId} `, JSON.stringify(code) );
+    await redis.set(`room:${code} `, JSON.stringify(room) );
     return code;
 }
 
 export async function joinRoom(code:string ,playerId:string , playerName:string): Promise<Room | null>{
 
-    const join = await redis.get(` rooms ${code}`)
+    const join = await redis.get(`rooms:${code}`)
     
     if(!join)return null;
     
@@ -44,10 +44,13 @@ export async function joinRoom(code:string ,playerId:string , playerName:string)
     if(room.players.length>=gamesetting.maxmembers){
         return null;
     }
+
+    //can add somthing to prevent duplicate join if required here
+
     //else
     room.players.push({id:playerId , name: playerName })
 
-    await redis.set(`room ${code}`,JSON.stringify(room));
+    await redis.set(`room:${code}`,JSON.stringify(room));
     return room;
 }
 
@@ -61,6 +64,7 @@ export async function removePlayer(code:string, playerId:string): Promise<void>{
 
     if(room.players.length==0){
         await redis.del(`room:${code}`)
+        return;
     }
     else{
         await redis.set(`room:${code}`, JSON.stringify(room));
