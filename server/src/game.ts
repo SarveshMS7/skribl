@@ -83,6 +83,6 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     state.score[playerId] += points;
 
     await redis.set(`game:${code}`,JSON.stringify(state));
-    return {correct:true, points};
+    return {correct:true, points};  
 
  }

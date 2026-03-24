@@ -3,6 +3,7 @@ import { createServer, get, METHODS } from "http";
 import { Server  } from "socket.io";
 import redis from "./redis";
 import { createRoom, joinRoom, removePlayer } from "./rooms";
+import { handleguess } from "./game";
 
 const app = express();
 const httpserver = createServer(app);
@@ -44,4 +45,21 @@ io.on('connection',(socket)=>{
             await redis.del(`player:${socket.id}`)
         }
     })
+    socket.on('guess',async({code, guess})=>{
+    const res =  await handleguess(socket.id , code , guess);
+    
+        if(res.correct){
+            io.to(code).emit('correctguess',{
+                playerId: socket.id,
+                points: res.points
+            });
+        }else{
+            // wrong guess goes as a normal text in the chat    
+            io.to(code).emit('chatmessage',{
+                playerId: socket.id,
+                message: guess
+            })
+        }
+    })
 })
+
