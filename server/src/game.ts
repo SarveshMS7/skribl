@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import redis from "./redis";
 import { gamesetting, Player } from "./rooms";
 
@@ -14,7 +15,7 @@ export interface gamestate{
     turnendtime:number,
     status: 'playing' | 'waiting' | 'Ended' ,
     currentWord:string,
-    //score:  
+    score: Record<string,number>
 }
 
 export async function game(code:string, players:{id:string}[]): Promise <gamestate> {
@@ -23,8 +24,9 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
         currentplayerID:players[0].id,
         turnendtime:Date.now() + gamesetting.drawtime*1000,
         status:'playing',
-        currentWord: sel()
-        //score
+        currentWord: sel(),
+        //didnt get how to calc score ;) check
+        score:Object.fromEntries(players.map(p => [p.id, 0]))
     };
     await redis.set(`game:${code}`,JSON.stringify(game));
     return game;
@@ -59,4 +61,28 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
 
     await redis.set(`game:${code}`, JSON.stringify(state));
     return state;
+ }
+
+ export async function handleguess(code:string , guess:string, playerId:string ){
+    const val = await redis.get(`game:${code}`);
+    if(!val)return {correct:false , points:0}
+
+    const state : gamestate = JSON.parse(val)
+
+    if(playerId === state.currentplayerID){
+        return {correct:false, points:0}
+    };
+
+
+    const check = guess.toLowerCase() === state.currentWord;
+    if(!check)return {correct:false , points:0}
+
+    const timeleft = Math.max(0,state.turnendtime - Date.now());
+    const points = Math.floor((timeleft/(gamesetting.drawtime*1000))*100);
+
+    state.score[playerId] += points;
+
+    await redis.set(`game:${code}`,JSON.stringify(state));
+    return {correct:true, points};
+
  }
