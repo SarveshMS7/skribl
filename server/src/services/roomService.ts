@@ -1,15 +1,5 @@
-import redis from "./redis";
-
-export interface Player{
-    id:string;
-    name:string;
-}
-
-export interface Room{
-    hostId:string;
-    status: 'playing' | 'waiting';
-    players: Player[],
-}
+import redis from "../redis";
+import { Room } from "../types";
 
 function generateroom(): string{
     const char = 'abcdefghijklmnopqrstuvwxyz1234567890';

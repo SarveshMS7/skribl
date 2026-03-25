@@ -2,8 +2,8 @@ import express from "express";
 import { createServer, get, METHODS } from "http";
 import { Server  } from "socket.io";
 import redis from "./redis";
-import { createRoom, joinRoom, removePlayer } from "./rooms";
-import { handleguess } from "./game";
+import { createRoom, joinRoom, removePlayer } from "./services/roomService";
+import { handleguess } from "./services/gameService";
 
 const app = express();
 const httpserver = createServer(app);

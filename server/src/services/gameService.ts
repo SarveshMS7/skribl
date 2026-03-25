@@ -1,6 +1,7 @@
-import { json } from "stream/consumers";
-import redis from "./redis";
-import { gamesetting, Player } from "./rooms";
+import redis from "../redis";
+import { gamesetting } from "./roomService";
+import { gamestate,Player } from "../types";
+
 
 const words =['giraffe', 'elephant', 'octopus', 'dolphin', 'peacock', 'kangaroo', 'panda', 'owl', 'flamingo', 'turtle', 'skateboard', 'roller skates', 'traffic light', 'street lamp', 'mailbox', 'windmill', 'lighthouse', 'tent', 'hammock', 'swing', 'seesaw', 'carousel', 'ferris wheel', 'hot air balloon', 'parachute', 'submarine', 'train', 'taxi', 'helicopter', 'scooter', 'frying pan', 'teapot', 'blender', 'toaster', 'sandwich', 'noodles', 'popcorn', 'donut', 'cupcake', 'milkshake', 'sunglasses', 'backpack', 'headphones', 'camera', 'telescope', 'compass', 'map', 'hourglass', 'alarm clock', 'keychain', 'candle stand', 'bookshelf', 'ladder', 'paintbrush', 'palette', 'scissors', 'glue', 'notebook', 'pencil case', 'ruler', 'eraser', 'magnet', 'battery', 'flashlight', 'plug', 'fan', 'air conditioner', 'washing machine', 'vacuum cleaner', 'doorbell', 'window', 'curtain', 'carpet', 'pillow', 'blanket', 'sofa', 'dining table', 'wardrobe', 'mirror frame', 'flower pot', 'cactus', 'bonsai', 'sunflower', 'mushroom', 'leaf', 'snowman', 'igloo', 'campfire', 'rainbow', 'waterfall', 'bridge arch', 'cave', 'island hut', 'treasure chest', 'pirate ship', 'robot arm', 'drone', 'satellite dish']
 
@@ -8,15 +9,6 @@ function sel():string {
     return words[ Math.floor(Math.random() * words.length)];
 }
 
-
-export interface gamestate{
-    currentRound: number,
-    currentplayerID: string,
-    turnendtime:number,
-    status: 'playing' | 'waiting' | 'Ended' ,
-    currentWord:string,
-    score: Record<string,number>
-}
 
 export async function game(code:string, players:{id:string}[]): Promise <gamestate> {
     const game : gamestate ={
