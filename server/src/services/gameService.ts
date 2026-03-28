@@ -24,6 +24,7 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     return game;
 }
 
+//next turn
  export async function nextTurn(code:string, players:{id:string}[]):Promise <gamestate | null>{
     const val = await redis.get(`game:${code}`)
     if(!val)return null;
@@ -55,6 +56,7 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     return state;
  }
 
+ //guess
  export async function handleguess(code:string , guess:string, playerId:string ){
     const val = await redis.get(`game:${code}`);
     if(!val)return {correct:false , points:0}

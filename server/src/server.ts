@@ -2,8 +2,8 @@ import express from "express";
 import { createServer, get, METHODS } from "http";
 import { Server  } from "socket.io";
 import redis from "./redis";
-import { createRoom, joinRoom, removePlayer } from "./services/roomService";
-import { handleguess } from "./services/gameService";
+import { createRoom, getRoom, joinRoom, removePlayer, updateRoom } from "./services/roomService";
+import { handleguess ,game, nextTurn} from "./services/gameService";
 
 const app = express();
 const httpserver = createServer(app);
@@ -21,8 +21,10 @@ httpserver.listen( 3001 , ()=>{
 })
  
 
-io.on('connection',(socket)=>{
 
+//below part should also be in another folder like /handlers but ill do it later just because 
+io.on('connection',(socket)=>{
+    //createroom event
     socket.on('createRoom',async({name}:{name:string})=>{
         const code = await createRoom(name, socket.id)
         socket.join(code);
@@ -30,6 +32,7 @@ io.on('connection',(socket)=>{
 
         console.log(`room created ${code} by ${name}`)
     })
+    //joinroom event
     socket.on('joinRoom',async({name,code}: {name:string , code:string})=>{
         const room = await joinRoom(name,code,socket.id)
         if(!room){
@@ -37,6 +40,7 @@ io.on('connection',(socket)=>{
             return 
         }
     })
+    //disconnect event
     socket.on('disconnect',async()=>{
         console.log(`disconnected ${socket.id}`)
         const code = await redis.get(`player:${socket.id}`)
@@ -45,6 +49,7 @@ io.on('connection',(socket)=>{
             await redis.del(`player:${socket.id}`)
         }
     })
+    //guess event
     socket.on('guess',async({code, guess})=>{
     const res =  await handleguess(socket.id , code , guess);
     
@@ -60,6 +65,28 @@ io.on('connection',(socket)=>{
                 message: guess
             })
         }
+    })
+//gamestart event
+    socket.on('startGame', async({code })=>{
+            const room = await getRoom(code);
+
+            if(!room){
+                socket.emit('error',{message: 'room not found'});
+                return;
+            }
+            if(room.hostId!= socket.id){
+                socket.emit(`error`,{message:'only host can start the game'})
+                return ;
+            }
+            await updateRoom (code,'playing');
+
+            const state = await game(code,room.players)
+            io.to(code).emit('gamestarted',{state})
+
+            setTimeout(()=>{
+                
+            },3000);
+
     })
 })
 
