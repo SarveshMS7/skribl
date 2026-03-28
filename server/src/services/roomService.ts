@@ -74,4 +74,20 @@ export const gamesetting = {
     rounds:3
 }
 
+// use this getroom for above functions
+export async function getRoom(code: string): Promise<Room | null> {
+    const val = await redis.get(`room:${code}`);
+    if(!val)return null;
+    //'as' is a ts thing that tells the val to be treated as--
+    return JSON.parse(val) as Room;   
+}
 
+export async function updateRoom(code: string, status: 'playing' | 'waiting'): Promise<void> {
+    const room = await getRoom(code);
+
+    if(room){
+        room.status =  status;
+        await redis.set(`room:${code}`,JSON.stringify(room));
+    }
+
+}
