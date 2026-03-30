@@ -4,6 +4,7 @@ import { Server  } from "socket.io";
 import redis from "./redis";
 import { createRoom, getRoom, joinRoom, removePlayer, updateRoom } from "./services/roomService";
 import { handleguess ,game, nextTurn} from "./services/gameService";
+import { gamestate } from "./types";
 
 const app = express();
 const httpserver = createServer(app);
@@ -23,6 +24,58 @@ httpserver.listen( 3001 , ()=>{
 
 
 //below part should also be in another folder like /handlers but ill do it later just because 
+
+//map for all the timers
+const activeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+//gets and deletes the timers 
+function cleargametime(code : string){
+    if(activeTimers.has(code)){
+        clearTimeout(activeTimers.get(code));
+        activeTimers.delete(code);
+    }
+}
+
+//this thing basically gets the room situation/status and decides what to do next 
+async function nextprocess(io:Server, code:string){
+    const room = await getRoom(code);
+    if(!room)return;
+
+    const state =  await nextTurn(code , room.players );
+
+    if(!state)return ;
+
+    if(state.status==='Ended'){
+        io.to(code).emit('gameEnded',{state});
+        await updateRoom(code, 'waiting');
+        cleargametime(code);
+        return;
+    }
+    io.to(code).emit('turnended',{
+        reason:'timeout',
+        nextDrawer: state.currentplayerID
+    });
+
+    setTimeout(()=>{
+        emitTurndata(io,code,state);
+    },3000)
+}
+// emits the data to players based on the player roles
+function emitTurndata(io:Server, code:string, state:gamestate){
+    const wordlen = state.currentWord.length;
+
+    io.to(state.currentplayerID).emit('turnStart',{state});
+    const hiddenstate = {
+        //copy everything from state object to this hidden state object ...
+        ...state,
+        currentword: null
+    }
+    io.to(code).except(state.currentplayerID).emit('turnStart',{state:hiddenstate,wordlen});
+    cleargametime(code);
+
+    const delay = Math.max(0, state.turnendtime - Date.now());
+    activeTimers.set(code, setTimeout(() => nextprocess(io, code), delay));
+}
+
 io.on('connection',(socket)=>{
     //createroom event
     socket.on('createRoom',async({name}:{name:string})=>{
@@ -84,9 +137,10 @@ io.on('connection',(socket)=>{
             io.to(code).emit('gamestarted',{state})
 
             setTimeout(()=>{
-                
+                emitTurndata(io,code,state);
             },3000);
 
     })
+    
 })
 
