@@ -4,7 +4,7 @@ import { Server  } from "socket.io";
 import redis from "./redis";
 import { createRoom, getRoom, joinRoom, removePlayer, updateRoom } from "./services/roomService";
 import { handleguess ,game, nextTurn} from "./services/gameService";
-import { gamestate } from "./types";
+import { gamestate, Draw } from "./types";
 
 const app = express();
 const httpserver = createServer(app);
@@ -64,6 +64,8 @@ function emitTurndata(io:Server, code:string, state:gamestate){
     const wordlen = state.currentWord.length;
 
     io.to(state.currentplayerID).emit('turnStart',{state});
+
+    io.to(code).emit('clearCanvas');
     const hiddenstate = {
         //copy everything from state object to this hidden state object ...
         ...state,
@@ -140,6 +142,14 @@ io.on('connection',(socket)=>{
                 emitTurndata(io,code,state);
             },3000);
 
+    })
+    //draw event
+    socket.on('draw',(data:Draw)=>{
+        socket.to(data.code).emit('draw',data);
+    })
+    //clear event
+    socket.on('clearboard',({code})=>{
+        io.to(code).emit('clearCanvas');
     })
     
 })
