@@ -18,7 +18,7 @@ export interface Room{
     players: Player[],
 }
 
-export interface DrawEvent{
+export interface Draw{
     code:string;
     x0: number;
     y0: number;
