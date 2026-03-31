@@ -17,3 +17,13 @@ export interface Room{
     status: 'playing' | 'waiting';
     players: Player[],
 }
+
+export interface DrawEvent{
+    code:string;
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+    color: string;
+    size: number;
+}
