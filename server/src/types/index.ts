@@ -12,10 +12,17 @@ export interface Player{
     name:string;
 }
 
+export interface GameSettings{
+    drawtime: number;   // seconds per turn
+    maxmembers: number;
+    rounds: number;
+}
+
 export interface Room{
     hostId:string;
     status: 'playing' | 'waiting';
-    players: Player[],
+    players: Player[];
+    settings: GameSettings;
 }
 
 export interface Draw{

@@ -9,6 +9,13 @@ export interface Room {
     hostId: string;
     status: 'waiting' | 'playing';
     players: Player[];
+    settings: GameSettings;
+}
+
+export interface GameSettings {
+    drawtime: number;
+    maxmembers: number;
+    rounds: number;
 }
 
 export interface GameState {
@@ -52,4 +59,5 @@ export interface ClientToServerEvents {
     guess: (data: { code: string; guess: string }) => void;
     draw: (data: DrawEvent) => void;
     clearboard: (data: { code: string }) => void;
+    gameSettings: (data: { code: string; settings: Partial<GameSettings> }) => void;
 }

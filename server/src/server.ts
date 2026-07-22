@@ -2,9 +2,9 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import redis from "./redis";
-import { createRoom, getRoom, joinRoom, removePlayer, updateRoom } from "./services/roomService";
+import { createRoom, getRoom, joinRoom, removePlayer, updateRoom, updateSettings } from "./services/roomService";
 import { handleguess ,game, nextTurn} from "./services/gameService";
-import { gamestate, Draw } from "./types";
+import { gamestate, Draw, GameSettings } from "./types";
 
 const app = express();
 const httpserver = createServer(app);
@@ -70,9 +70,8 @@ function emitTurndata(io:Server, code:string, state:gamestate){
 
     io.to(code).emit('clearCanvas');
     const hiddenstate = {
-        //copy everything from state object to this hidden state object ...
         ...state,
-        currentword: null
+        currentWord: null
     }
     io.to(code).except(state.currentplayerID).emit('turnStart',{state:hiddenstate,wordlen});
     cleargametime(code);
@@ -109,7 +108,18 @@ io.on('connection',(socket)=>{
         if(code){
             await removePlayer(code,socket.id);
             await redis.del(`player:${socket.id}`)
+            const room = await getRoom(code);
+            if(room) io.to(code).emit('roomUpdated', room);
         }
+    })
+    //game-settings event (host only, lobby only)
+    socket.on('gameSettings', async({code, settings}: {code:string, settings: Partial<GameSettings>})=>{
+        const room = await updateSettings(code, socket.id, settings);
+        if(!room){
+            socket.emit('error', {message: 'cannot update settings'});
+            return;
+        }
+        io.to(code).emit('roomUpdated', room);
     })
     //guess event
     socket.on('guess',async({code, guess})=>{

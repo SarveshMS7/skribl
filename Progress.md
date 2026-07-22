@@ -41,11 +41,11 @@
 - [x] Implement `leave-room` / disconnect cleanup
 - [x] Store room state in Redis (JSON serialise/deserialise)
 - [x] Emit `room-updated` event to all clients in room on any change
-- [ ] Implement `game-settings` event (rounds, draw time, custom words)
+- [x] Implement `game-settings` event (rounds, draw time, custom words)
 - [x] Implement host-transfer when host leaves
 - [x] Player list sync — broadcast player join/leave to room
 
-**Status:** `IN PROGRESS`
+**Status:** `DONE`
 
 ---
 
