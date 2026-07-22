@@ -1,6 +1,6 @@
 import express from "express";
-import { createServer, get, METHODS } from "http";
-import { Server  } from "socket.io";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import redis from "./redis";
 import { createRoom, getRoom, joinRoom, removePlayer, updateRoom } from "./services/roomService";
 import { handleguess ,game, nextTurn} from "./services/gameService";

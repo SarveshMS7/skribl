@@ -1,2 +1,7 @@
-import {io} from 'Socket.io-client'
+export function Canvas() {
+  return (
+    <canvas />
+  )
+}
 
+export default Canvas;

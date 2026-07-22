@@ -16,70 +16,70 @@
 ## Phase 1 — Project Setup & Infrastructure
 > Monorepo scaffold, Docker, Redis baseline
 
-- [ ] Initialise monorepo (pnpm workspaces or npm workspaces)
-- [ ] Scaffold React + Vite + TypeScript frontend (`apps/client`)
-- [ ] Scaffold Node.js + TypeScript backend (`apps/server`)
+- [x] Initialise monorepo (pnpm workspaces or npm workspaces)
+- [x] Scaffold React + Vite + TypeScript frontend (`apps/client`)
+- [x] Scaffold Node.js + TypeScript backend (`apps/server`)
 - [ ] Set up shared types package (`packages/types`)
 - [ ] Configure ESLint + Prettier across workspaces
-- [ ] Write `docker-compose.yml` with Redis service
+- [x] Write `docker-compose.yml` with Redis service
 - [ ] Write Dockerfile for backend (dev stage)
 - [ ] Write Dockerfile for frontend (dev stage)
-- [ ] Verify Redis connection from Node.js on startup
+- [x] Verify Redis connection from Node.js on startup
 - [ ] Set up environment variable loading (`.env` / dotenv)
 
-**Status:** `NOT STARTED` <!-- Update to IN PROGRESS or DONE -->
+**Status:** `IN PROGRESS` <!-- Update to IN PROGRESS or DONE -->
 
 ---
 
 ## Phase 2 — Backend: Rooms & Socket.IO
 > Socket server, room creation/joining, Redis state, player sync
 
-- [ ] Install and configure Socket.IO server on Express/HTTP server
-- [ ] Define room data model (roomId, players, settings, status)
-- [ ] Implement `create-room` event — generate room code, persist to Redis
-- [ ] Implement `join-room` event — validate code, add player, broadcast update
-- [ ] Implement `leave-room` / disconnect cleanup
-- [ ] Store room state in Redis (JSON serialise/deserialise)
+- [x] Install and configure Socket.IO server on Express/HTTP server
+- [x] Define room data model (roomId, players, settings, status)
+- [x] Implement `create-room` event — generate room code, persist to Redis
+- [x] Implement `join-room` event — validate code, add player, broadcast update
+- [x] Implement `leave-room` / disconnect cleanup
+- [x] Store room state in Redis (JSON serialise/deserialise)
 - [ ] Emit `room-updated` event to all clients in room on any change
 - [ ] Implement `game-settings` event (rounds, draw time, custom words)
-- [ ] Implement host-transfer when host leaves
+- [x] Implement host-transfer when host leaves
 - [ ] Player list sync — broadcast player join/leave to room
 
-**Status:** `NOT STARTED`
+**Status:** `IN PROGRESS`
 
 ---
 
 ## Phase 3 — Game Logic: Turns & Words
 > State machine, word selection, turn timer, guess scoring
 
-- [ ] Define game state machine (waiting → choosing → drawing → scores → end)
-- [ ] Implement `start-game` event (host only, min players check)
-- [ ] Word bank — default word list on server
+- [x] Define game state machine (waiting → choosing → drawing → scores → end)
+- [x] Implement `start-game` event (host only, min players check)
+- [x] Word bank — default word list on server
 - [ ] Word selection — pick 3 random words, send `word-choices` event to drawer
 - [ ] Implement `word-chosen` event — start turn timer
-- [ ] Server-side countdown timer for each turn
+- [x] Server-side countdown timer for each turn
 - [ ] Broadcast `timer-tick` event every second to all clients
-- [ ] Implement guess validation (case-insensitive exact match)
-- [ ] Scoring — full points for early guess, decreasing over time
-- [ ] Emit `correct-guess` event (reveal to guesser, hide word from others)
+- [x] Implement guess validation (case-insensitive exact match)
+- [x] Scoring — full points for early guess, decreasing over time
+- [x] Emit `correct-guess` event (reveal to guesser, hide word from others)
 - [ ] Hint system — progressively reveal letters as timer ticks (optional)
-- [ ] Turn end — everyone guessed OR timer expired → show word, show scores
-- [ ] Advance to next player's turn in rotation
-- [ ] Round completion — all players drew → round complete
-- [ ] End-game trigger after all rounds complete
-- [ ] Emit `score-update` after every correct guess
+- [x] Turn end — everyone guessed OR timer expired → show word, show scores
+- [x] Advance to next player's turn in rotation
+- [x] Round completion — all players drew → round complete
+- [x] End-game trigger after all rounds complete
+- [x] Emit `score-update` after every correct guess
 
-**Status:** `NOT STARTED`
+**Status:** `IN PROGRESS`
 
 ---
 
 ## Phase 4 — Frontend: UI & Real-time State
 > Lobby UI, socket client, game state store, chat/guess UI
 
-- [ ] Set up Socket.IO client (singleton, connect on mount)
+- [x] Set up Socket.IO client (singleton, connect on mount)
 - [ ] Home screen — create room / join room form
 - [ ] Lobby screen — player list, settings panel (host), start button
-- [ ] React context or Zustand store for game state
+- [x] React context or Zustand store for game state
 - [ ] Handle all incoming socket events and update state
 - [ ] Word chooser modal — show 3 word options to drawer
 - [ ] Word display — blanks for non-drawers, actual word for drawer
@@ -91,29 +91,29 @@
 - [ ] Round / turn counter display
 - [ ] Responsive layout (sidebar collapses on mobile — optional)
 
-**Status:** `NOT STARTED`
+**Status:** `IN PROGRESS`
 
 ---
 
 ## Phase 5 — Drawing Canvas
 > Canvas tools, real-time draw sync, canvas reset on turn end
 
-- [ ] Canvas component with ref — full drawing area
+- [x] Canvas component with ref — full drawing area
 - [ ] Tool state: pencil / eraser / fill bucket / colour picker / brush size
 - [ ] Mouse event handlers — mousedown, mousemove, mouseup, mouseleave
 - [ ] Touch event support for mobile drawing
-- [ ] Emit `draw-event` (path points, colour, size, tool) via socket
-- [ ] Receive and replay `draw-event`s on non-drawer canvases
+- [x] Emit `draw-event` (path points, colour, size, tool) via socket
+- [x] Receive and replay `draw-event`s on non-drawer canvases
 - [ ] Throttle/batch draw events to avoid flooding socket
 - [ ] Fill bucket tool — flood-fill algorithm on canvas pixel data
-- [ ] Canvas reset on turn start (clear all pixels)
-- [ ] Emit `canvas-clear` event when drawer clears / new turn starts
+- [x] Canvas reset on turn start (clear all pixels)
+- [x] Emit `canvas-clear` event when drawer clears / new turn starts
 - [ ] Undo last stroke (Ctrl+Z) — optional polish
 - [ ] Disable canvas interaction for non-drawers
 - [ ] Colour palette UI + custom colour input
 - [ ] Brush size slider
 
-**Status:** `NOT STARTED`
+**Status:** `IN PROGRESS`
 
 ---
 
@@ -140,7 +140,7 @@
 <!-- Agents and humans: add dated notes here when resuming work -->
 
 ### Latest session
-- Date: 
-- Worked on: 
-- Stopped at: 
-- Next task:
+- Date: 2026-07-23
+- Worked on: Fixed file & import errors, casing bugs, missing index.css, verified clean project build, and updated progress tracking.
+- Stopped at: Build fixed cleanly; core backend room/game socket handlers, Redis integration & SocketContext baseline completed.
+- Next task: Implement room update socket broadcasts & build out frontend Lobby & Game UI components.
