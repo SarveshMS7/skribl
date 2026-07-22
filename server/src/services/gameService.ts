@@ -57,7 +57,7 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
  }
 
  //guess
- export async function handleguess(code:string , guess:string, playerId:string ){
+ export async function handleguess(playerId:string, code:string, guess:string ){
     const val = await redis.get(`game:${code}`);
     if(!val)return {correct:false , points:0}
 

@@ -5,3 +5,32 @@ services:
     container_name: skribl-redis
     ports:
       - '6379:6379'
+
+  server:
+    build:
+      context: ./server
+    container_name: skribl-server
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CLIENT_ORIGIN: http://localhost:5173
+    depends_on:
+      - redis
+    volumes:
+      - ./server/src:/app/src
+
+  client:
+    build:
+      context: ./client
+    container_name: skribl-client
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_SERVER_URL: http://localhost:3001
+    depends_on:
+      - server
+    volumes:
+      - ./client/src:/app/src

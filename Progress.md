@@ -19,15 +19,15 @@
 - [x] Initialise monorepo (pnpm workspaces or npm workspaces)
 - [x] Scaffold React + Vite + TypeScript frontend (`apps/client`)
 - [x] Scaffold Node.js + TypeScript backend (`apps/server`)
-- [ ] Set up shared types package (`packages/types`)
-- [ ] Configure ESLint + Prettier across workspaces
+- [x] Set up shared types package (`packages/types`)
+- [x] Configure ESLint + Prettier across workspaces
 - [x] Write `docker-compose.yml` with Redis service
-- [ ] Write Dockerfile for backend (dev stage)
-- [ ] Write Dockerfile for frontend (dev stage)
+- [x] Write Dockerfile for backend (dev stage)
+- [x] Write Dockerfile for frontend (dev stage)
 - [x] Verify Redis connection from Node.js on startup
-- [ ] Set up environment variable loading (`.env` / dotenv)
+- [x] Set up environment variable loading (`.env` / dotenv)
 
-**Status:** `IN PROGRESS` <!-- Update to IN PROGRESS or DONE -->
+**Status:** `DONE`
 
 ---
 
@@ -40,10 +40,10 @@
 - [x] Implement `join-room` event — validate code, add player, broadcast update
 - [x] Implement `leave-room` / disconnect cleanup
 - [x] Store room state in Redis (JSON serialise/deserialise)
-- [ ] Emit `room-updated` event to all clients in room on any change
+- [x] Emit `room-updated` event to all clients in room on any change
 - [ ] Implement `game-settings` event (rounds, draw time, custom words)
 - [x] Implement host-transfer when host leaves
-- [ ] Player list sync — broadcast player join/leave to room
+- [x] Player list sync — broadcast player join/leave to room
 
 **Status:** `IN PROGRESS`
 
@@ -139,8 +139,13 @@
 ## Session Notes
 <!-- Agents and humans: add dated notes here when resuming work -->
 
-### Latest session
-- Date: 2026-07-23
-- Worked on: Fixed file & import errors, casing bugs, missing index.css, verified clean project build, and updated progress tracking.
-- Stopped at: Build fixed cleanly; core backend room/game socket handlers, Redis integration & SocketContext baseline completed.
-- Next task: Implement room update socket broadcasts & build out frontend Lobby & Game UI components.
+### 2026-07-23 (Session 2)
+- Completed all remaining Phase 1 tasks.
+- Fixed bugs: Redis key trailing space, wrong key prefix `rooms:` → `room:`, swapped args in `createRoom`/`joinRoom`/`handleguess`, wrong socket URL (`https://localhost:3000` → `http://localhost:3001`), host-transfer running after early return.
+- Added dotenv to server; both server and client now use `.env` files.
+- Created `server/Dockerfile` and `client/Dockerfile` (dev stage).
+- Updated `docker-compose.yml` with server + client services.
+- Created `packages/types` shared types package with typed Socket.IO event maps.
+- Added `.prettierrc` root-level Prettier config.
+- `tsc --noEmit` on server: 0 errors.
+- Next: Phase 2 remaining (`game-settings` event) → Phase 4 frontend UI (Home + Lobby screens).

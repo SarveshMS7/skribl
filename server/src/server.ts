@@ -9,16 +9,19 @@ import { gamestate, Draw } from "./types";
 const app = express();
 const httpserver = createServer(app);
 
+const PORT = parseInt(process.env.PORT ?? '3001');
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? 'http://localhost:5173';
+
 //need to explicitly allow the cross origin request as browser blocks it by default as the frontend and backend run on different ports.
 const io = new Server(httpserver,{
     cors:{
-        origin: "http://localhost:5173",
+        origin: CLIENT_ORIGIN,
         methods: ['GET' , 'POST']
     }
 });
  
-httpserver.listen( 3001 , ()=>{
-    console.log("listening on port 3001")
+httpserver.listen(PORT, ()=>{
+    console.log(`listening on port ${PORT}`)
 })
  
 
@@ -84,6 +87,8 @@ io.on('connection',(socket)=>{
         const code = await createRoom(name, socket.id)
         socket.join(code);
         socket.emit('roomCreated',{code});
+        const room = await getRoom(code);
+        if(room) io.to(code).emit('roomUpdated', room);
 
         console.log(`room created ${code} by ${name}`)
     })
@@ -91,9 +96,11 @@ io.on('connection',(socket)=>{
     socket.on('joinRoom',async({name,code}: {name:string , code:string})=>{
         const room = await joinRoom(name,code,socket.id)
         if(!room){
-            socket.emit('error', {message:"room not found"})
-            return 
+            socket.emit('error', {message:"room not found or full"})
+            return
         }
+        socket.join(code);
+        io.to(code).emit('roomUpdated', room);
     })
     //disconnect event
     socket.on('disconnect',async()=>{
@@ -106,7 +113,7 @@ io.on('connection',(socket)=>{
     })
     //guess event
     socket.on('guess',async({code, guess})=>{
-    const res =  await handleguess(socket.id , code , guess);
+    const res = await handleguess(socket.id, code, guess);
     
         if(res.correct){
             io.to(code).emit('correctguess',{
@@ -114,7 +121,6 @@ io.on('connection',(socket)=>{
                 points: res.points
             });
         }else{
-            // wrong guess goes as a normal text in the chat    
             io.to(code).emit('chatmessage',{
                 playerId: socket.id,
                 message: guess

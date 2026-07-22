@@ -15,7 +15,8 @@
   "type": "commonjs",
   "workspaces": [
     "client",
-    "server"
+    "server",
+    "packages/*"
   ],
   "private": "true",
   "devDependencies": {
