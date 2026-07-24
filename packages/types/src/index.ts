@@ -22,9 +22,10 @@ export interface GameState {
     currentRound: number;
     currentPlayerID: string;
     turnEndTime: number;
-    status: 'playing' | 'waiting' | 'Ended';
+    status: 'playing' | 'waiting' | 'Ended' | 'choosing';
     currentWord: string | null; // null when sent to non-drawers
     score: Record<string, number>;
+    guessedPlayers: string[]; // player IDs who guessed correctly this turn
 }
 
 export interface DrawEvent {
@@ -43,13 +44,16 @@ export interface ServerToClientEvents {
     roomUpdated: (room: Room) => void;
     gamestarted: (data: { state: GameState }) => void;
     turnStart: (data: { state: GameState; wordlen?: number }) => void;
-    turnended: (data: { reason: string; nextDrawer: string }) => void;
+    turnended: (data: { reason: string; nextDrawer: string; word: string }) => void;
     gameEnded: (data: { state: GameState }) => void;
     correctguess: (data: { playerId: string; points: number }) => void;
     chatmessage: (data: { playerId: string; message: string }) => void;
     clearCanvas: () => void;
     draw: (data: DrawEvent) => void;
     error: (data: { message: string }) => void;
+    wordChoices: (data: { words: string[] }) => void;
+    timerTick: (data: { secondsLeft: number; hint: string }) => void;
+    scoreUpdate: (data: { score: Record<string, number> }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -60,4 +64,5 @@ export interface ClientToServerEvents {
     draw: (data: DrawEvent) => void;
     clearboard: (data: { code: string }) => void;
     gameSettings: (data: { code: string; settings: Partial<GameSettings> }) => void;
+    wordChosen: (data: { code: string; word: string }) => void;
 }

@@ -55,21 +55,21 @@
 - [x] Define game state machine (waiting → choosing → drawing → scores → end)
 - [x] Implement `start-game` event (host only, min players check)
 - [x] Word bank — default word list on server
-- [ ] Word selection — pick 3 random words, send `word-choices` event to drawer
-- [ ] Implement `word-chosen` event — start turn timer
+- [x] Word selection — pick 3 random words, send `word-choices` event to drawer
+- [x] Implement `word-chosen` event — start turn timer
 - [x] Server-side countdown timer for each turn
-- [ ] Broadcast `timer-tick` event every second to all clients
+- [x] Broadcast `timer-tick` event every second to all clients
 - [x] Implement guess validation (case-insensitive exact match)
 - [x] Scoring — full points for early guess, decreasing over time
 - [x] Emit `correct-guess` event (reveal to guesser, hide word from others)
-- [ ] Hint system — progressively reveal letters as timer ticks (optional)
+- [x] Hint system — progressively reveal letters as timer ticks (optional)
 - [x] Turn end — everyone guessed OR timer expired → show word, show scores
 - [x] Advance to next player's turn in rotation
 - [x] Round completion — all players drew → round complete
 - [x] End-game trigger after all rounds complete
 - [x] Emit `score-update` after every correct guess
 
-**Status:** `IN PROGRESS`
+**Status:** `DONE`
 
 ---
 
@@ -149,3 +149,15 @@
 - Added `.prettierrc` root-level Prettier config.
 - `tsc --noEmit` on server: 0 errors.
 - Next: Phase 2 remaining (`game-settings` event) → Phase 4 frontend UI (Home + Lobby screens).
+
+### 2026-07-24 (Session 3)
+- Completed all remaining Phase 3 tasks (Game Logic: Turns & Words).
+- **Word selection**: Added `pickThreeWords()` — sends 3 unique random words to the drawer via `wordChoices` event.
+- **Word-chosen flow**: New `wordChosen` socket handler — drawer picks a word, turn timer starts. 15s auto-pick timeout if drawer doesn't choose.
+- **Timer tick**: `setInterval` broadcasts `timerTick` with `secondsLeft` + `hint` every second to all clients.
+- **Hint system**: `generateHint()` progressively reveals letters at 25/50/75% of elapsed time. Spaces/hyphens always visible.
+- Added `choosing` status to game state machine (waiting → choosing → playing → Ended).
+- Added `guessedPlayers` tracking to prevent duplicate scoring and enable all-guessed early turn end.
+- Updated shared types with new socket events (`wordChoices`, `timerTick`, `scoreUpdate`, `wordChosen`).
+- `tsc --noEmit` on server: 0 errors. `tsc -b --noEmit` on client: 0 errors.
+- Next: Phase 4 frontend UI.

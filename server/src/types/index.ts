@@ -2,9 +2,10 @@ export interface gamestate{
     currentRound: number,
     currentplayerID: string,
     turnendtime:number,
-    status: 'playing' | 'waiting' | 'Ended' ,
+    status: 'playing' | 'waiting' | 'Ended' | 'choosing',
     currentWord:string,
-    score: Record<string,number>
+    score: Record<string,number>,
+    guessedPlayers: string[]
 }
 
 export interface Player{

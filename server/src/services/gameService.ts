@@ -9,6 +9,62 @@ function sel():string {
     return words[ Math.floor(Math.random() * words.length)];
 }
 
+/**
+ * Pick 3 unique random words from the word bank.
+ */
+export function pickThreeWords(): string[] {
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+}
+
+/**
+ * Generate a hint string that progressively reveals letters.
+ * At 0% elapsed → all underscores.
+ * At 25% → ~25% of letters revealed.
+ * At 50% → ~50% of letters revealed.
+ * At 75% → ~75% of letters revealed.
+ * Spaces and hyphens are always visible.
+ * Uses a seeded approach based on the word itself so the same letters
+ * are revealed consistently across ticks.
+ */
+export function generateHint(word: string, elapsedMs: number, totalMs: number): string {
+    const fraction = Math.min(1, Math.max(0, elapsedMs / totalMs));
+
+    // Get indices of actual letters (not spaces/hyphens)
+    const letterIndices: number[] = [];
+    for (let i = 0; i < word.length; i++) {
+        if (word[i] !== ' ' && word[i] !== '-') {
+            letterIndices.push(i);
+        }
+    }
+
+    // Deterministic shuffle based on word content so hints are stable
+    const sorted = [...letterIndices].sort((a, b) => {
+        const ca = word.charCodeAt(a) * 31 + a;
+        const cb = word.charCodeAt(b) * 31 + b;
+        return ca - cb;
+    });
+
+    // How many letters to reveal
+    const revealCount = Math.floor(sorted.length * fraction * 0.75); // cap at 75% revealed
+
+    const revealed = new Set(sorted.slice(0, revealCount));
+
+    let hint = '';
+    for (let i = 0; i < word.length; i++) {
+        if (word[i] === ' ') {
+            hint += '  '; // double space for readability
+        } else if (word[i] === '-') {
+            hint += '-';
+        } else if (revealed.has(i)) {
+            hint += word[i];
+        } else {
+            hint += '_';
+        }
+    }
+    return hint;
+}
+
 // helper to get room settings for a game
 async function getSettings(code: string): Promise<GameSettings> {
     const room = await getRoom(code);
@@ -21,9 +77,10 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
         currentRound: 1,
         currentplayerID:players[0].id,
         turnendtime:Date.now() + settings.drawtime*1000,
-        status:'playing',
+        status:'choosing',
         currentWord: sel(),
-        score:Object.fromEntries(players.map(p => [p.id, 0]))
+        score:Object.fromEntries(players.map(p => [p.id, 0])),
+        guessedPlayers: []
     };
     await redis.set(`game:${code}`,JSON.stringify(state));
     return state;
@@ -55,6 +112,8 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
 
     state.currentWord = sel();
     state.turnendtime = Date.now() + settings.drawtime*1000;
+    state.status = 'choosing';
+    state.guessedPlayers = [];
 
     await redis.set(`game:${code}`, JSON.stringify(state));
     return state;
@@ -68,9 +127,15 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const settings = await getSettings(code);
     const state : gamestate = JSON.parse(val)
 
+    // can't guess if you're the drawer
     if(playerId === state.currentplayerID){
         return {correct:false, points:0}
     };
+
+    // can't guess again if already guessed correctly
+    if(state.guessedPlayers.includes(playerId)){
+        return {correct:false, points:0}
+    }
 
     const check = guess.toLowerCase() === state.currentWord.toLowerCase();
     if(!check)return {correct:false , points:0}
@@ -79,8 +144,9 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const points = Math.floor((timeleft/(settings.drawtime*1000))*100);
 
     state.score[playerId] += points;
+    state.guessedPlayers.push(playerId);
 
     await redis.set(`game:${code}`,JSON.stringify(state));
-    return {correct:true, points};
+    return {correct:true, points, allGuessed: false};
 
  }
