@@ -1,0 +1,115 @@
+.player-list {
+  padding: 16px;
+}
+
+.player-list__title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.player-list__items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-list__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.player-list__item--me {
+  background: rgba(124, 58, 237, 0.08);
+  border-left: 3px solid var(--accent-primary);
+}
+
+.player-list__item--drawer {
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.player-list__item--guessed {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.player-list__rank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 22px;
+}
+
+.player-list__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.player-list__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-list__name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-list__you {
+  font-size: 0.7rem;
+  color: var(--accent-secondary);
+  font-weight: 400;
+}
+
+.player-list__indicators {
+  display: flex;
+  gap: 6px;
+}
+
+.player-list__badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.player-list__badge--drawer {
+  color: var(--text-warning);
+  background: rgba(251, 191, 36, 0.12);
+}
+
+.player-list__badge--guessed {
+  color: var(--text-success);
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.player-list__score {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  min-width: 36px;
+  text-align: right;
+}

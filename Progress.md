@@ -77,21 +77,21 @@
 > Lobby UI, socket client, game state store, chat/guess UI
 
 - [x] Set up Socket.IO client (singleton, connect on mount)
-- [ ] Home screen — create room / join room form
-- [ ] Lobby screen — player list, settings panel (host), start button
+- [x] Home screen — create room / join room form
+- [x] Lobby screen — player list, settings panel (host), start button
 - [x] React context or Zustand store for game state
-- [ ] Handle all incoming socket events and update state
-- [ ] Word chooser modal — show 3 word options to drawer
-- [ ] Word display — blanks for non-drawers, actual word for drawer
-- [ ] Timer bar UI — animated countdown
-- [ ] Chat + guess input component
-- [ ] Chat message list — colour-coded for correct guesses vs chat
-- [ ] Player scoreboard sidebar — live score updates
-- [ ] Current drawer indicator
-- [ ] Round / turn counter display
-- [ ] Responsive layout (sidebar collapses on mobile — optional)
+- [x] Handle all incoming socket events and update state
+- [x] Word chooser modal — show 3 word options to drawer
+- [x] Word display — blanks for non-drawers, actual word for drawer
+- [x] Timer bar UI — animated countdown
+- [x] Chat + guess input component
+- [x] Chat message list — colour-coded for correct guesses vs chat
+- [x] Player scoreboard sidebar — live score updates
+- [x] Current drawer indicator
+- [x] Round / turn counter display
+- [x] Responsive layout (sidebar collapses on mobile — optional)
 
-**Status:** `IN PROGRESS`
+**Status:** `DONE`
 
 ---
 
@@ -161,3 +161,17 @@
 - Updated shared types with new socket events (`wordChoices`, `timerTick`, `scoreUpdate`, `wordChosen`).
 - `tsc --noEmit` on server: 0 errors. `tsc -b --noEmit` on client: 0 errors.
 - Next: Phase 4 frontend UI.
+
+### 2026-07-25 (Session 4)
+- Completed all Phase 4 tasks (Frontend: UI & Real-time State).
+- **Design system**: Full CSS rewrite — dark theme, glassmorphism tokens, CSS custom properties, Google Fonts (Inter + Outfit), animation keyframes, utility classes.
+- **Game store**: `useGameStore.tsx` — React Context + `useReducer` with typed actions for all game state transitions.
+- **Socket events**: `useSocketEvents.ts` — custom hook subscribes to all 13 server→client events and dispatches to store.
+- **Home screen**: Animated gradient title, create/join room forms, glassmorphism cards.
+- **Lobby screen**: Room code with copy, player list with avatars, host settings (draw time/rounds/max players sliders), start game button.
+- **Game screen**: 3-column layout (players | canvas | chat) with responsive breakpoints.
+- **Game components**: WordChooser modal (3 cards), TimerBar (green→yellow→red), WordDisplay (hint/drawer/reveal), ChatBox (color-coded messages), PlayerList (sorted by score, drawer/guessed badges), RoundInfo.
+- **End screen**: Podium display (top 3), full rankings, back-to-lobby flow.
+- **SEO**: Updated index.html with title and meta description.
+- `tsc --noEmit` on server: 0 errors. `tsc -b --noEmit` on client: 0 errors. `vite build`: success (68 modules, 20.8KB CSS, 253KB JS gzipped to 78KB).
+- Next: Phase 5 drawing canvas tools.

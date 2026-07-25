@@ -1,0 +1,42 @@
+.timer-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 140px;
+}
+
+.timer-bar__track {
+  flex: 1;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.timer-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s linear, background var(--duration-normal) var(--ease-out);
+}
+
+.timer-bar--green {
+  background: linear-gradient(90deg, #34d399, #10b981);
+}
+
+.timer-bar--yellow {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.timer-bar--red {
+  background: linear-gradient(90deg, #f87171, #ef4444);
+  animation: pulse 0.5s ease infinite;
+}
+
+.timer-bar__time {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 32px;
+  text-align: right;
+}

@@ -1,0 +1,72 @@
+.word-chooser__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  animation: fadeIn var(--duration-fast) var(--ease-out);
+}
+
+.word-chooser {
+  padding: 40px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  animation: scaleIn var(--duration-normal) var(--ease-spring);
+}
+
+.word-chooser__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.word-chooser__subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.word-chooser__cards {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.word-chooser__card {
+  flex: 1;
+  padding: 20px 16px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-spring);
+  animation: fadeInUp var(--duration-normal) var(--ease-spring) both;
+}
+
+.word-chooser__card:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: var(--accent-primary);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: var(--shadow-glow);
+}
+
+.word-chooser__card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.word-chooser__timer-note {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 20px;
+}

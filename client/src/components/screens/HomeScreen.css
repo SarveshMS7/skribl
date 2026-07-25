@@ -1,0 +1,149 @@
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.home__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 440px;
+  animation: fadeInUp 0.6s var(--ease-out) both;
+}
+
+/* ── Title ──────────────────────────────────────────────── */
+.home__header {
+  text-align: center;
+}
+
+.home__title {
+  font-family: var(--font-heading);
+  font-size: 4.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 30%, #2563eb 60%, #38bdf8 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+  letter-spacing: -2px;
+  user-select: none;
+}
+
+.home__title-letter {
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.12s);
+}
+
+.home__subtitle {
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  margin-top: 4px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Status ─────────────────────────────────────────────── */
+.home__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.home__status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: pulse 2s ease infinite;
+}
+
+.home__status--connected .home__status-dot {
+  background: var(--text-success);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.home__status--connected {
+  color: var(--text-success);
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.home__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  animation: fadeInUp 0.6s var(--ease-out) 0.15s both;
+}
+
+.home__btn {
+  width: 100%;
+}
+
+/* ── Form ───────────────────────────────────────────────── */
+.home__form {
+  width: 100%;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: scaleIn var(--duration-slow) var(--ease-spring) both;
+}
+
+.home__form-title {
+  font-size: 1.4rem;
+  text-align: center;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.home__label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.home__form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.home__form-actions .btn-primary {
+  flex: 1;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .home__title {
+    font-size: 3rem;
+  }
+
+  .home__form {
+    padding: 24px;
+  }
+}
