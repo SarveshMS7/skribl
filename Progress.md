@@ -99,21 +99,21 @@
 > Canvas tools, real-time draw sync, canvas reset on turn end
 
 - [x] Canvas component with ref — full drawing area
-- [ ] Tool state: pencil / eraser / fill bucket / colour picker / brush size
-- [ ] Mouse event handlers — mousedown, mousemove, mouseup, mouseleave
-- [ ] Touch event support for mobile drawing
+- [x] Tool state: pencil / eraser / fill bucket / colour picker / brush size
+- [x] Mouse event handlers — mousedown, mousemove, mouseup, mouseleave
+- [x] Touch event support for mobile drawing
 - [x] Emit `draw-event` (path points, colour, size, tool) via socket
 - [x] Receive and replay `draw-event`s on non-drawer canvases
-- [ ] Throttle/batch draw events to avoid flooding socket
-- [ ] Fill bucket tool — flood-fill algorithm on canvas pixel data
+- [x] Throttle/batch draw events to avoid flooding socket
+- [x] Fill bucket tool — flood-fill algorithm on canvas pixel data
 - [x] Canvas reset on turn start (clear all pixels)
 - [x] Emit `canvas-clear` event when drawer clears / new turn starts
-- [ ] Undo last stroke (Ctrl+Z) — optional polish
-- [ ] Disable canvas interaction for non-drawers
-- [ ] Colour palette UI + custom colour input
-- [ ] Brush size slider
+- [x] Undo last stroke (Ctrl+Z) — optional polish
+- [x] Disable canvas interaction for non-drawers
+- [x] Colour palette UI + custom colour input
+- [x] Brush size slider
 
-**Status:** `IN PROGRESS`
+**Status:** `DONE`
 
 ---
 

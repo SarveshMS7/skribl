@@ -36,6 +36,7 @@ export interface DrawEvent {
     y1: number;
     color: string;
     size: number;
+    tool?: 'pencil' | 'eraser' | 'fill';
 }
 
 // Socket event payloads

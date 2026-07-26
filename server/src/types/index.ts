@@ -34,4 +34,5 @@ export interface Draw{
     y1: number;
     color: string;
     size: number;
+    tool?: 'pencil' | 'eraser' | 'fill';
 }
