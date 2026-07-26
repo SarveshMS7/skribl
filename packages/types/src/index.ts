@@ -55,15 +55,18 @@ export interface ServerToClientEvents {
     wordChoices: (data: { words: string[] }) => void;
     timerTick: (data: { secondsLeft: number; hint: string }) => void;
     scoreUpdate: (data: { score: Record<string, number> }) => void;
+    returnedToLobby: (data: { room: Room }) => void;
 }
 
 export interface ClientToServerEvents {
     createRoom: (data: { name: string }) => void;
     joinRoom: (data: { name: string; code: string }) => void;
+    rejoinRoom: (data: { name: string; code: string }) => void;
     startGame: (data: { code: string }) => void;
     guess: (data: { code: string; guess: string }) => void;
     draw: (data: DrawEvent) => void;
     clearboard: (data: { code: string }) => void;
     gameSettings: (data: { code: string; settings: Partial<GameSettings> }) => void;
     wordChosen: (data: { code: string; word: string }) => void;
+    playAgain: (data: { code: string }) => void;
 }

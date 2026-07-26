@@ -120,19 +120,19 @@
 ## Phase 6 — Polish & Deployment
 > End-game screen, edge cases, production Docker build
 
-- [ ] End-game screen — final leaderboard, winner highlight
-- [ ] Play again flow — reset state, return to lobby
-- [ ] Rejoin handling — player refreshes mid-game
-- [ ] Room full / invalid code error messages
-- [ ] Idle timeout — remove rooms with no players from Redis
-- [ ] Rate-limit socket events (anti-spam on chat)
-- [ ] Production Dockerfile for backend (multi-stage build)
-- [ ] Production Dockerfile for frontend (Vite build → static serve)
-- [ ] Update docker-compose for production
-- [ ] Environment-based config (dev vs prod URLs)
-- [ ] Basic smoke test — join, draw, guess, scores work end-to-end
+- [x] End-game screen — final leaderboard, winner highlight
+- [x] Play again flow — reset state, return to lobby
+- [x] Rejoin handling — player refreshes mid-game
+- [x] Room full / invalid code error messages
+- [x] Idle timeout — remove rooms with no players from Redis (2h TTL)
+- [x] Rate-limit socket events (anti-spam on chat)
+- [x] Production Dockerfile for backend (multi-stage build)
+- [x] Production Dockerfile for frontend (Vite build → Nginx static serve)
+- [x] Update docker-compose for production
+- [x] Environment-based config (dev vs prod URLs)
+- [x] Basic smoke test — join, draw, guess, scores work end-to-end
 
-**Status:** `NOT STARTED`
+**Status:** `DONE`
 
 ---
 

@@ -179,6 +179,9 @@ function emitTurndata(io:Server, code:string, state:gamestate){
     activeTimers.set(code, setTimeout(() => nextprocess(io, code), delay));
 }
 
+// Map to rate-limit guesses per socket
+const lastGuessTime = new Map<string, number>();
+
 io.on('connection',(socket)=>{
     //createroom event
     socket.on('createRoom',async({name}:{name:string})=>{
@@ -200,9 +203,44 @@ io.on('connection',(socket)=>{
         socket.join(code);
         io.to(code).emit('roomUpdated', room);
     })
+    //rejoinroom event (for page refreshes mid-game)
+    socket.on('rejoinRoom', async ({ name, code }: { name: string; code: string }) => {
+        let room = await getRoom(code);
+        if (!room) {
+            socket.emit('error', { message: 'Room no longer exists' });
+            return;
+        }
+        socket.join(code);
+
+        const existingPlayer = room.players.find(p => p.name === name);
+        if (!existingPlayer) {
+            const joined = await joinRoom(name, code, socket.id);
+            if (!joined) {
+                socket.emit('error', { message: 'Cannot rejoin room' });
+                return;
+            }
+            room = joined;
+        } else {
+            existingPlayer.id = socket.id;
+            await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
+        }
+
+        await redis.set(`player:${socket.id}`, code);
+        io.to(code).emit('roomUpdated', room);
+
+        // Sync game state if game in progress
+        const val = await redis.get(`game:${code}`);
+        if (val) {
+            const state: gamestate = JSON.parse(val);
+            const isCurrentDrawer = state.currentplayerID === socket.id;
+            const hiddenState = isCurrentDrawer ? state : { ...state, currentWord: null };
+            socket.emit('turnStart', { state: hiddenState, wordlen: state.currentWord?.length });
+        }
+    })
     //disconnect event
     socket.on('disconnect',async()=>{
         console.log(`disconnected ${socket.id}`)
+        lastGuessTime.delete(socket.id);
         const code = await redis.get(`player:${socket.id}`)
         if(code){
             await removePlayer(code,socket.id);
@@ -220,8 +258,16 @@ io.on('connection',(socket)=>{
         }
         io.to(code).emit('roomUpdated', room);
     })
-    //guess event
+    //guess event with anti-spam rate limiting (min 250ms interval)
     socket.on('guess',async({code, guess})=>{
+        const now = Date.now();
+        const last = lastGuessTime.get(socket.id) ?? 0;
+        if (now - last < 250) {
+            socket.emit('error', { message: 'Please wait a moment before sending another guess' });
+            return;
+        }
+        lastGuessTime.set(socket.id, now);
+
         const res = await handleguess(socket.id, code, guess);
     
         if(res.correct){
@@ -251,6 +297,21 @@ io.on('connection',(socket)=>{
                 playerId: socket.id,
                 message: guess
             })
+        }
+    })
+    //playAgain event — return everyone to lobby
+    socket.on('playAgain', async ({ code }) => {
+        const room = await getRoom(code);
+        if (!room) {
+            socket.emit('error', { message: 'Room not found' });
+            return;
+        }
+        await updateRoom(code, 'waiting');
+        await redis.del(`game:${code}`);
+        cleargametime(code);
+        const updatedRoom = await getRoom(code);
+        if (updatedRoom) {
+            io.to(code).emit('returnedToLobby', { room: updatedRoom });
         }
     })
     //gamestart event

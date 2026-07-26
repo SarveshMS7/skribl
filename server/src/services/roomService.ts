@@ -25,7 +25,7 @@ export async function createRoom(name:string, hostId:string) :Promise<string>{
         players:[{id:hostId, name}],
         settings: { ...DEFAULT_SETTINGS }
     }
-    await redis.set(`room:${code}`, JSON.stringify(room));
+    await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
     await redis.set(`player:${hostId}`, code);
     return code;
 }
@@ -36,7 +36,7 @@ export async function joinRoom(name:string, code:string, playerId:string): Promi
     if(room.players.length >= room.settings.maxmembers) return null;
 
     room.players.push({id:playerId, name})
-    await redis.set(`room:${code}`, JSON.stringify(room));
+    await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
     await redis.set(`player:${playerId}`, code);
     return room;
 }
@@ -55,7 +55,7 @@ export async function removePlayer(code:string, playerId:string): Promise<void>{
     if(room.hostId === playerId){
         room.hostId = room.players[0].id
     }
-    await redis.set(`room:${code}`, JSON.stringify(room));
+    await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
 }
 
 export async function getRoom(code: string): Promise<Room | null> {
@@ -68,7 +68,7 @@ export async function updateRoom(code: string, status: 'playing' | 'waiting'): P
     const room = await getRoom(code);
     if(room){
         room.status = status;
-        await redis.set(`room:${code}`, JSON.stringify(room));
+        await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
     }
 }
 
@@ -91,6 +91,6 @@ export async function updateSettings(code: string, hostId: string, newSettings: 
         room.settings.maxmembers = Math.min(12, Math.max(2, newSettings.maxmembers));
     }
 
-    await redis.set(`room:${code}`, JSON.stringify(room));
+    await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
     return room;
 }

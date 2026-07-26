@@ -6,7 +6,7 @@ const PODIUM_COLORS = ['#fbbf24', '#a7a3be', '#cd7c2f'];
 const PODIUM_LABELS = ['🥇', '🥈', '🥉'];
 
 export default function EndScreen() {
-  const { gameState, room } = useGameStore();
+  const { gameState, room, roomCode } = useGameStore();
   const dispatch = useGameDispatch();
   const { socket } = useSocket();
 
@@ -18,6 +18,9 @@ export default function EndScreen() {
     .sort((a, b) => b.score - a.score);
 
   function handleBackToLobby() {
+    if (roomCode) {
+      socket.emit('playAgain', { code: roomCode });
+    }
     dispatch({ type: 'SET_SCREEN', screen: 'lobby' });
   }
 

@@ -70,6 +70,7 @@ export type StoreAction =
   | { type: 'GAME_ENDED'; state: GameState }
   | { type: 'CLEAR_CANVAS' }
   | { type: 'SET_TOAST'; toast: { message: string; type: 'error' | 'success' } | null }
+  | { type: 'RETURNED_TO_LOBBY'; room: Room }
   | { type: 'RESET' };
 // ── Initial state ──────────────────────────────────────────
 const initialState: StoreState = {
@@ -109,6 +110,17 @@ function gameReducer(state: StoreState, action: StoreAction): StoreState {
       return { ...state, roomCode: action.code, screen: 'lobby' };
     case 'ROOM_UPDATED':
       return { ...state, room: action.room };
+    case 'RETURNED_TO_LOBBY':
+      return {
+        ...state,
+        screen: 'lobby',
+        room: action.room,
+        gameState: null,
+        wordChoices: [],
+        currentWord: null,
+        hint: '',
+        turnEndWord: null,
+      };
     case 'GAME_STARTED':
       return {
         ...state,

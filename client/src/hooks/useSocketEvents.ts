@@ -62,6 +62,10 @@ export function useSocketEvents() {
       dispatch({ type: 'CLEAR_CANVAS' });
     });
 
+    socket.on('returnedToLobby', (data: { room: Room }) => {
+      dispatch({ type: 'RETURNED_TO_LOBBY', room: data.room });
+    });
+
     socket.on('error', (data: { message: string }) => {
       dispatch({ type: 'SET_TOAST', toast: { message: data.message, type: 'error' } });
       // Auto-dismiss after 3 seconds
@@ -84,6 +88,7 @@ export function useSocketEvents() {
       socket.off('turnended');
       socket.off('gameEnded');
       socket.off('clearCanvas');
+      socket.off('returnedToLobby');
       socket.off('error');
     };
   }, [socket, dispatch]);
