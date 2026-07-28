@@ -1,14 +1,9 @@
 import { useEffect } from 'react';
-import { useSocket } from '../context/SocketContext';
+import { socket } from '../services/socket/socket';
 import { useGameDispatch } from '../store/useGameStore';
 import type { Room, GameState } from '../store/useGameStore';
 
-/**
- * Subscribes to all server→client socket events and dispatches
- * actions to the game store. Mount once in App.
- */
 export function useSocketEvents() {
-  const { socket } = useSocket();
   const dispatch = useGameDispatch();
 
   useEffect(() => {
@@ -91,5 +86,5 @@ export function useSocketEvents() {
       socket.off('returnedToLobby');
       socket.off('error');
     };
-  }, [socket, dispatch]);
+  }, [dispatch]);
 }

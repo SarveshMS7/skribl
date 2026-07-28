@@ -1,17 +1,36 @@
-import { useState } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { useState, useEffect } from 'react';
+import { socket } from '../../services/socket/socket';
 import { useGameDispatch } from '../../store/useGameStore';
 import './HomeScreen.css';
 
 const TITLE = 'SKRIBL';
 
 export default function HomeScreen() {
-  const { socket } = useSocket();
   const dispatch = useGameDispatch();
 
   const [mode, setMode] = useState<'menu' | 'create' | 'join'>('menu');
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  useEffect(() => {
+    function onConnect() { setIsConnected(true); }
+    function onDisconnect() { setIsConnected(false); }
+
+    if (socket.connected) {
+      setIsConnected(true);
+    } else {
+      socket.connect();
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+    };
+  }, []);
 
   function handleCreate() {
     if (!name.trim()) return;
@@ -44,9 +63,9 @@ export default function HomeScreen() {
         </div>
 
         {/* Connection status */}
-        <div className={`home__status ${socket.connected ? 'home__status--connected' : ''}`}>
+        <div className={`home__status ${isConnected ? 'home__status--connected' : ''}`}>
           <span className="home__status-dot" />
-          {socket.connected ? 'Connected' : 'Connecting...'}
+          {isConnected ? 'Connected' : 'Connecting...'}
         </div>
 
         {mode === 'menu' && (
@@ -75,7 +94,7 @@ export default function HomeScreen() {
               />
             </div>
             <div className="home__form-actions">
-              <button type="submit" className="btn btn-primary" disabled={!name.trim() || !socket.connected}>
+              <button type="submit" className="btn btn-primary" disabled={!name.trim() || !isConnected}>
                 Create
               </button>
               <button type="button" className="btn btn-secondary" onClick={() => setMode('menu')}>
@@ -110,7 +129,7 @@ export default function HomeScreen() {
               />
             </div>
             <div className="home__form-actions">
-              <button type="submit" className="btn btn-primary" disabled={!name.trim() || !code.trim() || !socket.connected}>
+              <button type="submit" className="btn btn-primary" disabled={!name.trim() || !code.trim() || !isConnected}>
                 Join
               </button>
               <button type="button" className="btn btn-secondary" onClick={() => setMode('menu')}>

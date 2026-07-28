@@ -137,6 +137,8 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
         return {correct:false, points:0}
     }
 
+    if(!state.currentWord) return {correct:false, points:0};
+
     const check = guess.toLowerCase() === state.currentWord.toLowerCase();
     if(!check)return {correct:false , points:0}
 

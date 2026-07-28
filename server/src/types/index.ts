@@ -1,38 +1,5 @@
-export interface gamestate{
-    currentRound: number,
-    currentPlayerID: string,
-    turnEndTime: number,
-    status: 'playing' | 'waiting' | 'Ended' | 'choosing',
-    currentWord:string,
-    score: Record<string,number>,
-    guessedPlayers: string[]
-}
+import type { GameState, Player, GameSettings, Room, DrawEvent } from '@skribl/types';
 
-export interface Player{
-    id:string;
-    name:string;
-}
-
-export interface GameSettings{
-    drawtime: number;   // seconds per turn
-    maxmembers: number;
-    rounds: number;
-}
-
-export interface Room{
-    hostId:string;
-    status: 'playing' | 'waiting';
-    players: Player[];
-    settings: GameSettings;
-}
-
-export interface Draw{
-    code:string;
-    x0: number;
-    y0: number;
-    x1: number;
-    y1: number;
-    color: string;
-    size: number;
-    tool?: 'pencil' | 'eraser' | 'fill';
-}
+export type gamestate = GameState;
+export type Draw = DrawEvent;
+export type { Player, GameSettings, Room, DrawEvent };

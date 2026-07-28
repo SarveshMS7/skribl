@@ -1,32 +1,7 @@
 import { createContext, useContext, useReducer, type ReactNode, type Dispatch } from 'react';
+import type { Player, Room, GameSettings, GameState } from '@skribl/types';
 
-//This is the central state manager for the entire client app.
-// It uses React's Context + useReducer pattern (like a mini-Redux).
-// ── Types ──────────────────────────────────────────────────
-export interface Player {
-  id: string;
-  name: string;
-}
-export interface Room {
-  hostId: string;
-  status: 'waiting' | 'playing';
-  players: Player[];
-  settings: GameSettings;
-}
-export interface GameSettings {
-  drawtime: number;
-  maxmembers: number;
-  rounds: number;
-}
-export interface GameState {
-  currentRound: number;
-  currentPlayerID: string;
-  turnEndTime: number;
-  status: 'playing' | 'waiting' | 'Ended' | 'choosing';
-  currentWord: string | null;
-  score: Record<string, number>;
-  guessedPlayers: string[];
-}
+export type { Player, Room, GameSettings, GameState };
 export interface ChatMessage {
   id: string;
   playerId: string;

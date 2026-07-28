@@ -3,20 +3,10 @@
  */
 
 export function hexToRgba(hex: string): [number, number, number, number] {
-  let c = hex.replace('#', '');
-  if (c.length === 3) {
-    c = c.split('').map(x => x + x).join('');
-  }
-  if (c.length === 6) {
-    c += 'ff';
-  }
-  const num = parseInt(c, 16);
-  return [
-    (num >> 24) & 255,
-    (num >> 16) & 255,
-    (num >> 8) & 255,
-    num & 255,
-  ];
+  const c = hex.replace('#', '');
+  const full = c.length === 3 ? c.split('').map(x => x + x).join('') : c;
+  const num = parseInt(full, 16);
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255, 255];
 }
 
 export function floodFill(

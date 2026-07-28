@@ -1,5 +1,5 @@
 import { useGameStore, useGameDispatch } from '../../store/useGameStore';
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import './EndScreen.css';
 
 const PODIUM_COLORS = ['#fbbf24', '#a7a3be', '#cd7c2f'];
@@ -8,7 +8,6 @@ const PODIUM_LABELS = ['🥇', '🥈', '🥉'];
 export default function EndScreen() {
   const { gameState, room, roomCode } = useGameStore();
   const dispatch = useGameDispatch();
-  const { socket } = useSocket();
 
   if (!gameState || !room) return null;
 

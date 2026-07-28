@@ -1,4 +1,4 @@
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore } from '../../store/useGameStore';
 import './PlayerList.css';
 
@@ -9,7 +9,6 @@ const AVATAR_COLORS = [
 ];
 
 export default function PlayerList() {
-  const { socket } = useSocket();
   const { room, gameState } = useGameStore();
 
   if (!room || !gameState) return null;

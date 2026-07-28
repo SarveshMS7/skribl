@@ -1,9 +1,8 @@
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore, useGameDispatch } from '../../store/useGameStore';
 import './WordChooser.css';
 
 export default function WordChooser() {
-  const { socket } = useSocket();
   const { wordChoices, roomCode, gameState } = useGameStore();
   const dispatch = useGameDispatch();
 

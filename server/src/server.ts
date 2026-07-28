@@ -145,7 +145,7 @@ async function applyWordChoice(io: Server, code: string, word: string) {
 
 // emits the data to players based on the player roles
 function emitTurndata(io:Server, code:string, state:gamestate){
-    const wordlen = state.currentWord.length;
+    const wordlen = state.currentWord ? state.currentWord.length : 0;
 
     io.to(state.currentPlayerID).emit('turnStart',{state});
 
@@ -166,7 +166,7 @@ function emitTurndata(io:Server, code:string, state:gamestate){
         const now = Date.now();
         const secondsLeft = Math.max(0, Math.ceil((state.turnEndTime - now) / 1000));
         const elapsedMs = now - turnStartTime;
-        const hint = generateHint(state.currentWord, elapsedMs, totalMs);
+        const hint = generateHint(state.currentWord ?? '', elapsedMs, totalMs);
 
         io.to(code).emit('timerTick', { secondsLeft, hint });
 

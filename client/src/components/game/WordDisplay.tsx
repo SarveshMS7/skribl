@@ -1,8 +1,7 @@
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore } from '../../store/useGameStore';
 
 export default function WordDisplay() {
-  const { socket } = useSocket();
   const { gameState, currentWord, hint, turnEndWord } = useGameStore();
 
   if (!gameState) return null;

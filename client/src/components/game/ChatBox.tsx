@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect, type FormEvent } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore } from '../../store/useGameStore';
 import './ChatBox.css';
 
 export default function ChatBox() {
-  const { socket } = useSocket();
   const { messages, roomCode, gameState } = useGameStore();
   const [text, setText] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);

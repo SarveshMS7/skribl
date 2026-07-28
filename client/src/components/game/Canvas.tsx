@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore } from '../../store/useGameStore';
 import CanvasToolbar, { type Tool } from './CanvasToolbar';
 import { floodFill } from '../../utils/floodFill';
@@ -11,7 +11,6 @@ const LOGICAL_HEIGHT = 600;
 const MAX_HISTORY = 25;
 
 export function Canvas() {
-  const { socket } = useSocket();
   const { gameState, roomCode } = useGameStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

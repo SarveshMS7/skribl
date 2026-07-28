@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { socket } from '../../services/socket/socket';
 import { useGameStore, useGameDispatch } from '../../store/useGameStore';
 import './LobbyScreen.css';
 
@@ -10,7 +10,6 @@ const AVATAR_COLORS = [
 ];
 
 export default function LobbyScreen() {
-  const { socket } = useSocket();
   const state = useGameStore();
   const dispatch = useGameDispatch();
   const { room, roomCode } = state;
