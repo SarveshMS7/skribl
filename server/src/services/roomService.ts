@@ -8,7 +8,7 @@ export const DEFAULT_SETTINGS: GameSettings = {
 };
 
 function generateroom(): string{
-    const char = 'abcdefghijklmnopqrstuvwxyz1234567890';
+    const char = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
     for (let i = 0; i < 6; i++) {
         code += char[Math.floor(Math.random() * char.length)];
@@ -30,18 +30,26 @@ export async function createRoom(name:string, hostId:string) :Promise<string>{
     return code;
 }
 
-export async function joinRoom(name:string, code:string, playerId:string): Promise<Room | null>{
+export async function joinRoom(name:string, rawCode:string, playerId:string): Promise<Room | null>{
+    const code = rawCode.trim().toUpperCase();
     const room = await getRoom(code);
     if(!room) return null;
     if(room.players.length >= room.settings.maxmembers) return null;
 
-    room.players.push({id:playerId, name})
+    const existingIndex = room.players.findIndex(p => p.id === playerId || p.name === name);
+    if (existingIndex >= 0) {
+        room.players[existingIndex] = { id: playerId, name };
+    } else {
+        room.players.push({id:playerId, name});
+    }
+
     await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
     await redis.set(`player:${playerId}`, code);
     return room;
 }
 
-export async function removePlayer(code:string, playerId:string): Promise<void>{
+export async function removePlayer(rawCode:string, playerId:string): Promise<void>{
+    const code = rawCode.trim().toUpperCase();
     const room = await getRoom(code);
     if(!room) return;
 
@@ -58,13 +66,15 @@ export async function removePlayer(code:string, playerId:string): Promise<void>{
     await redis.set(`room:${code}`, JSON.stringify(room), 'EX', 7200);
 }
 
-export async function getRoom(code: string): Promise<Room | null> {
+export async function getRoom(rawCode: string): Promise<Room | null> {
+    const code = rawCode.trim().toUpperCase();
     const val = await redis.get(`room:${code}`);
     if(!val) return null;
     return JSON.parse(val) as Room;
 }
 
-export async function updateRoom(code: string, status: 'playing' | 'waiting'): Promise<void> {
+export async function updateRoom(rawCode: string, status: 'playing' | 'waiting'): Promise<void> {
+    const code = rawCode.trim().toUpperCase();
     const room = await getRoom(code);
     if(room){
         room.status = status;
@@ -72,7 +82,8 @@ export async function updateRoom(code: string, status: 'playing' | 'waiting'): P
     }
 }
 
-export async function updateSettings(code: string, hostId: string, newSettings: Partial<GameSettings>): Promise<Room | null> {
+export async function updateSettings(rawCode: string, hostId: string, newSettings: Partial<GameSettings>): Promise<Room | null> {
+    const code = rawCode.trim().toUpperCase();
     const room = await getRoom(code);
     if(!room) return null;
     // only host can change settings

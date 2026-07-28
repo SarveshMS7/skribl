@@ -51,6 +51,7 @@ export interface ServerToClientEvents {
     chatmessage: (data: { playerId: string; message: string }) => void;
     clearCanvas: () => void;
     draw: (data: DrawEvent) => void;
+    drawHistory: (events: DrawEvent[]) => void;
     error: (data: { message: string }) => void;
     wordChoices: (data: { words: string[] }) => void;
     timerTick: (data: { secondsLeft: number; hint: string }) => void;

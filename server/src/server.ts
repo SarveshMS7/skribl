@@ -33,6 +33,8 @@ const activeTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const tickIntervals = new Map<string, ReturnType<typeof setInterval>>();
 //map for choose-word timeouts (15s to pick a word)
 const chooseTimers = new Map<string, ReturnType<typeof setTimeout>>();
+//map for storing draw events for active turns
+const roomDrawEvents = new Map<string, Draw[]>();
 
 //clears all timers for a room
 function cleargametime(code : string){
@@ -73,7 +75,7 @@ async function nextprocess(io:Server, code:string){
     }
     io.to(code).emit('turnended',{
         reason:'timeout',
-        nextDrawer: state.currentplayerID,
+        nextDrawer: state.currentPlayerID,
         word: oldWord
     });
 
@@ -86,21 +88,24 @@ async function nextprocess(io:Server, code:string){
  * Begin the word-choice phase for the current drawer.
  * Sends 3 random words to the drawer and waits up to 15s for them to pick.
  */
-function startWordChoice(io: Server, code: string, state: gamestate) {
+async function startWordChoice(io: Server, code: string, state: gamestate) {
     const words = pickThreeWords();
 
+    roomDrawEvents.set(code, []);
     io.to(code).emit('clearCanvas');
 
-    // Send word choices ONLY to the drawer
-    io.to(state.currentplayerID).emit('wordChoices', { words });
-
-    // Tell all clients we're in the choosing phase
     const choosingState: gamestate = {
         ...state,
         status: 'choosing',
         currentWord: ''
     };
+    await redis.set(`game:${code}`, JSON.stringify(choosingState));
+
+    // Tell all clients we're in the choosing phase
     io.to(code).emit('turnStart', { state: { ...choosingState, currentWord: null } });
+
+    // Send word choices ONLY to the drawer
+    io.to(state.currentPlayerID).emit('wordChoices', { words });
 
     // Auto-pick first word if drawer doesn't choose in time
     chooseTimers.set(code, setTimeout(async () => {
@@ -130,7 +135,7 @@ async function applyWordChoice(io: Server, code: string, word: string) {
 
     state.currentWord = word;
     state.status = 'playing';
-    state.turnendtime = Date.now() + settings.drawtime * 1000;
+    state.turnEndTime = Date.now() + settings.drawtime * 1000;
     state.guessedPlayers = [];
 
     await redis.set(`game:${code}`, JSON.stringify(state));
@@ -142,24 +147,24 @@ async function applyWordChoice(io: Server, code: string, word: string) {
 function emitTurndata(io:Server, code:string, state:gamestate){
     const wordlen = state.currentWord.length;
 
-    io.to(state.currentplayerID).emit('turnStart',{state});
+    io.to(state.currentPlayerID).emit('turnStart',{state});
 
     const hiddenstate = {
         ...state,
         currentWord: null
     }
-    io.to(code).except(state.currentplayerID).emit('turnStart',{state:hiddenstate,wordlen});
+    io.to(code).except(state.currentPlayerID).emit('turnStart',{state:hiddenstate,wordlen});
     
     // Clear any old timers
     cleargametime(code);
 
     // Start the per-second tick interval with hints
-    const totalMs = state.turnendtime - Date.now();
+    const totalMs = state.turnEndTime - Date.now();
     const turnStartTime = Date.now();
 
     tickIntervals.set(code, setInterval(async () => {
         const now = Date.now();
-        const secondsLeft = Math.max(0, Math.ceil((state.turnendtime - now) / 1000));
+        const secondsLeft = Math.max(0, Math.ceil((state.turnEndTime - now) / 1000));
         const elapsedMs = now - turnStartTime;
         const hint = generateHint(state.currentWord, elapsedMs, totalMs);
 
@@ -175,7 +180,7 @@ function emitTurndata(io:Server, code:string, state:gamestate){
     }, 1000));
 
     // Set the turn-end timeout
-    const delay = Math.max(0, state.turnendtime - Date.now());
+    const delay = Math.max(0, state.turnEndTime - Date.now());
     activeTimers.set(code, setTimeout(() => nextprocess(io, code), delay));
 }
 
@@ -232,7 +237,7 @@ io.on('connection',(socket)=>{
         const val = await redis.get(`game:${code}`);
         if (val) {
             const state: gamestate = JSON.parse(val);
-            const isCurrentDrawer = state.currentplayerID === socket.id;
+            const isCurrentDrawer = state.currentPlayerID === socket.id;
             const hiddenState = isCurrentDrawer ? state : { ...state, currentWord: null };
             socket.emit('turnStart', { state: hiddenState, wordlen: state.currentWord?.length });
         }
@@ -246,7 +251,27 @@ io.on('connection',(socket)=>{
             await removePlayer(code,socket.id);
             await redis.del(`player:${socket.id}`)
             const room = await getRoom(code);
-            if(room) io.to(code).emit('roomUpdated', room);
+            if(room) {
+                io.to(code).emit('roomUpdated', room);
+
+                // Handle mid-game disconnects
+                const gameVal = await redis.get(`game:${code}`);
+                if (gameVal) {
+                    const gameState: gamestate = JSON.parse(gameVal);
+                    if (room.players.length < 2) {
+                        // Not enough players left to continue playing
+                        cleargametime(code);
+                        await updateRoom(code, 'waiting');
+                        await redis.del(`game:${code}`);
+                        io.to(code).emit('returnedToLobby', { room });
+                        io.to(code).emit('error', { message: 'Game ended: Not enough players remaining.' });
+                    } else if (gameState.currentPlayerID === socket.id) {
+                        // Active drawer disconnected -> skip to next turn immediately
+                        cleargametime(code);
+                        nextprocess(io, code);
+                    }
+                }
+            }
         }
     })
     //game-settings event (host only, lobby only)
@@ -284,7 +309,7 @@ io.on('connection',(socket)=>{
                 // Check if all non-drawer players have guessed
                 const room = await getRoom(code);
                 if(room){
-                    const nonDrawerCount = room.players.filter(p => p.id !== state.currentplayerID).length;
+                    const nonDrawerCount = room.players.filter(p => p.id !== state.currentPlayerID).length;
                     if(state.guessedPlayers.length >= nonDrawerCount){
                         // Everyone guessed — end the turn early
                         cleargametime(code);
@@ -345,7 +370,7 @@ io.on('connection',(socket)=>{
         }
         const state: gamestate = JSON.parse(val);
         // Only the current drawer can choose
-        if(state.currentplayerID !== socket.id){
+        if(state.currentPlayerID !== socket.id){
             socket.emit('error', {message: 'only the drawer can choose a word'});
             return;
         }
@@ -358,10 +383,16 @@ io.on('connection',(socket)=>{
     })
     //draw event
     socket.on('draw',(data:Draw)=>{
+        const events = roomDrawEvents.get(data.code) ?? [];
+        if (events.length < 2500) {
+            events.push(data);
+            roomDrawEvents.set(data.code, events);
+        }
         socket.to(data.code).emit('draw',data);
     })
     //clear event
     socket.on('clearboard',({code})=>{
+        roomDrawEvents.set(code, []);
         io.to(code).emit('clearCanvas');
     })
     

@@ -121,16 +121,23 @@ export function Canvas() {
       }
     }
 
+    function handleDrawHistory(events: DrawEvent[]) {
+      clearLocalCanvas();
+      events.forEach(evt => handleDraw(evt));
+    }
+
     function handleClearCanvas() {
       clearLocalCanvas();
       setHistory([]);
     }
 
     socket.on('draw', handleDraw);
+    socket.on('drawHistory', handleDrawHistory);
     socket.on('clearCanvas', handleClearCanvas);
 
     return () => {
       socket.off('draw', handleDraw);
+      socket.off('drawHistory', handleDrawHistory);
       socket.off('clearCanvas', handleClearCanvas);
     };
   }, [socket, drawSegment, clearLocalCanvas]);
@@ -200,10 +207,8 @@ export function Canvas() {
     const currentPos = getCanvasCoords(clientX, clientY);
     const lastPos = lastPosRef.current;
 
-    // Ignore tiny movements (< 1px) to prevent event flood
-    const dx = currentPos.x - lastPos.x;
-    const dy = currentPos.y - lastPos.y;
-    if (dx * dx + dy * dy < 1) return;
+    // Only skip if mouse didn't move at all
+    if (currentPos.x === lastPos.x && currentPos.y === lastPos.y) return;
 
     drawSegment(lastPos.x, lastPos.y, currentPos.x, currentPos.y, color, size, tool);
 

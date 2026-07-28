@@ -141,7 +141,7 @@ function gameReducer(state: StoreState, action: StoreAction): StoreState {
         currentWord: newWord,
         wordLength: newWordLen,
         hint: '',
-        wordChoices: [],
+        wordChoices: action.state.status === 'choosing' ? state.wordChoices : [],
         turnEndWord: null,
       };
     }

@@ -2,11 +2,11 @@ import { useGameStore } from '../../store/useGameStore';
 import './TimerBar.css';
 
 export default function TimerBar() {
-  const { secondsLeft, gameState } = useGameStore();
+  const { secondsLeft, gameState, room } = useGameStore();
 
   if (!gameState) return null;
 
-  const totalTime = 80; // fallback
+  const totalTime = room?.settings.drawtime ?? 60;
   const pct = Math.max(0, Math.min(100, (secondsLeft / totalTime) * 100));
 
   let colorClass = 'timer-bar--green';

@@ -1,7 +1,7 @@
 export interface gamestate{
     currentRound: number,
-    currentplayerID: string,
-    turnendtime:number,
+    currentPlayerID: string,
+    turnEndTime: number,
     status: 'playing' | 'waiting' | 'Ended' | 'choosing',
     currentWord:string,
     score: Record<string,number>,

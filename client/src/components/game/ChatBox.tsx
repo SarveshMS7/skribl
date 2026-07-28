@@ -18,7 +18,7 @@ export default function ChatBox() {
     e.preventDefault();
     if (!text.trim() || !roomCode) return;
 
-    socket.emit('guess', { code: roomCode, message: text.trim() });
+    socket.emit('guess', { code: roomCode, guess: text.trim() });
     setText('');
   }
 

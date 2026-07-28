@@ -19,6 +19,17 @@ export default function WordDisplay() {
     );
   }
 
+  // During word choice phase
+  if (gameState.status === 'choosing') {
+    return (
+      <div className="word-display">
+        <span className="word-display__label">
+          {isDrawer ? 'Pick a word below...' : 'Drawer is choosing a word...'}
+        </span>
+      </div>
+    );
+  }
+
   // Drawer sees the full word
   if (isDrawer && currentWord) {
     return (

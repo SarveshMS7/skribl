@@ -75,8 +75,8 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const settings = await getSettings(code);
     const state : gamestate ={
         currentRound: 1,
-        currentplayerID:players[0].id,
-        turnendtime:Date.now() + settings.drawtime*1000,
+        currentPlayerID:players[0].id,
+        turnEndTime:Date.now() + settings.drawtime*1000,
         status:'choosing',
         currentWord: sel(),
         score:Object.fromEntries(players.map(p => [p.id, 0])),
@@ -94,7 +94,7 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const settings = await getSettings(code);
     const state : gamestate = JSON.parse(val)
 
-    const index = players.findIndex(p=>p.id === state.currentplayerID);
+    const index = players.findIndex(p=>p.id === state.currentPlayerID);
     const nextindex = index+1;
 
     if(nextindex>= players.length){
@@ -105,13 +105,13 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
             await redis.set(`game:${code}`,JSON.stringify(state))
             return state;
         }
-        state.currentplayerID = players[0].id;
+        state.currentPlayerID = players[0].id;
     }else{
-        state.currentplayerID = players[nextindex].id
+        state.currentPlayerID = players[nextindex].id
     }
 
     state.currentWord = sel();
-    state.turnendtime = Date.now() + settings.drawtime*1000;
+    state.turnEndTime = Date.now() + settings.drawtime*1000;
     state.status = 'choosing';
     state.guessedPlayers = [];
 
@@ -128,7 +128,7 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const state : gamestate = JSON.parse(val)
 
     // can't guess if you're the drawer
-    if(playerId === state.currentplayerID){
+    if(playerId === state.currentPlayerID){
         return {correct:false, points:0}
     };
 
@@ -140,10 +140,10 @@ export async function game(code:string, players:{id:string}[]): Promise <gamesta
     const check = guess.toLowerCase() === state.currentWord.toLowerCase();
     if(!check)return {correct:false , points:0}
 
-    const timeleft = Math.max(0,state.turnendtime - Date.now());
+    const timeleft = Math.max(0,state.turnEndTime - Date.now());
     const points = Math.floor((timeleft/(settings.drawtime*1000))*100);
 
-    state.score[playerId] += points;
+    state.score[playerId] = (state.score[playerId] ?? 0) + points;
     state.guessedPlayers.push(playerId);
 
     await redis.set(`game:${code}`,JSON.stringify(state));

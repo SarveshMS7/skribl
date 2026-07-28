@@ -4,10 +4,11 @@ import './WordChooser.css';
 
 export default function WordChooser() {
   const { socket } = useSocket();
-  const { wordChoices, roomCode } = useGameStore();
+  const { wordChoices, roomCode, gameState } = useGameStore();
   const dispatch = useGameDispatch();
 
-  if (wordChoices.length === 0) return null;
+  const isDrawer = socket.id === gameState?.currentPlayerID;
+  if (!isDrawer || wordChoices.length === 0) return null;
 
   function handleChoose(word: string) {
     socket.emit('wordChosen', { code: roomCode, word });
