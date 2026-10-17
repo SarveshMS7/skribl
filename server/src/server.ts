@@ -20,6 +20,10 @@ const io = new Server(httpserver,{
     }
 });
  
+app.get('/health', (_req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 httpserver.listen(PORT, ()=>{
     console.log(`listening on port ${PORT}`)
 })

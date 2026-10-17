@@ -1,0 +1,39 @@
+services:
+  # -----------------------------------------------------------
+  # Backend Web Service (Socket.IO + Express Node.js Server)
+  # -----------------------------------------------------------
+  - type: web
+    name: skribl-server
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build:server
+    startCommand: npm run start:server
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: CLIENT_ORIGIN
+        # Update this to your deployed client URL, e.g. https://skribl-client.onrender.com
+        value: http://localhost:5173
+      - key: REDIS_URL
+        # Set to your Upstash or Render Redis connection URL
+        sync: false
+
+  # -----------------------------------------------------------
+  # Frontend Static Site (React + Vite Client)
+  # -----------------------------------------------------------
+  - type: static
+    name: skribl-client
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build:client
+    staticPublishPath: client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SERVER_URL
+        # Update this to your deployed backend URL, e.g. https://skribl-server.onrender.com
+        sync: false
