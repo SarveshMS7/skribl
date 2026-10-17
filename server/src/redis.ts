@@ -1,7 +1,28 @@
 import 'dotenv/config';
 import { Redis } from "ioredis"
 
-const redisUrl = process.env.REDIS_URL;
+function parseRedisUrl(rawUrl?: string): string | undefined {
+  if (!rawUrl) return undefined;
+  let url = rawUrl.trim();
+  // Strip wrapping quotes if present
+  url = url.replace(/^["']|["']$/g, '').trim();
+  // Handle accidental copy of redis-cli syntax (e.g. "--tls -u redis://..." or "redis-cli --tls -u ...")
+  if (url.includes('-u ')) {
+    const isTls = url.includes('--tls');
+    const match = url.match(/-u\s+(redis[s]?:\/\/\S+)/);
+    if (match) {
+      url = match[1];
+    } else {
+      url = url.substring(url.indexOf('-u ') + 3).trim();
+    }
+    if (isTls && url.startsWith('redis://')) {
+      url = url.replace('redis://', 'rediss://');
+    }
+  }
+  return url;
+}
+
+const redisUrl = parseRedisUrl(process.env.REDIS_URL);
 
 const redis = redisUrl
   ? new Redis(redisUrl, {
