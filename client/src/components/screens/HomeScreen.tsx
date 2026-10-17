@@ -12,10 +12,19 @@ export default function HomeScreen() {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [showWakeupTip, setShowWakeupTip] = useState(false);
 
   useEffect(() => {
-    function onConnect() { setIsConnected(true); }
-    function onDisconnect() { setIsConnected(false); }
+    function onConnect() {
+      setIsConnected(true);
+      setShowWakeupTip(false);
+    }
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+    function onConnectError() {
+      setIsConnected(false);
+    }
 
     if (socket.connected) {
       setIsConnected(true);
@@ -23,12 +32,21 @@ export default function HomeScreen() {
       socket.connect();
     }
 
+    const timer = setTimeout(() => {
+      if (!socket.connected) {
+        setShowWakeupTip(true);
+      }
+    }, 5000);
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
+    socket.on('connect_error', onConnectError);
 
     return () => {
+      clearTimeout(timer);
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
+      socket.off('connect_error', onConnectError);
     };
   }, []);
 
@@ -67,6 +85,11 @@ export default function HomeScreen() {
           <span className="home__status-dot" />
           {isConnected ? 'Connected' : 'Connecting...'}
         </div>
+        {!isConnected && showWakeupTip && (
+          <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '-8px 0 16px', textAlign: 'center' }}>
+            Free tier backend may take ~50s to wake up if inactive.
+          </p>
+        )}
 
         {mode === 'menu' && (
           <div className="home__actions">

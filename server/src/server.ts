@@ -10,14 +10,36 @@ const app = express();
 const httpserver = createServer(app);
 
 const PORT = parseInt(process.env.PORT ?? '3001');
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? 'http://localhost:5173';
+const clientOriginEnv = process.env.CLIENT_ORIGIN;
+const allowedOrigins = clientOriginEnv
+  ? clientOriginEnv.split(',').map((o) => o.trim().replace(/\/+$/, ''))
+  : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:80'];
 
-//need to explicitly allow the cross origin request as browser blocks it by default as the frontend and backend run on different ports.
-const io = new Server(httpserver,{
-    cors:{
-        origin: CLIENT_ORIGIN,
-        methods: ['GET' , 'POST']
-    }
+// Need to explicitly allow cross origin requests
+const io = new Server(httpserver, {
+  cors: {
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, or same-domain)
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/+$/, '');
+      if (
+        clientOriginEnv === '*' ||
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.onrender.com') ||
+        cleanOrigin.includes('localhost') ||
+        cleanOrigin.includes('127.0.0.1')
+      ) {
+        return callback(null, true);
+      }
+
+      console.warn(`[CORS] Blocked request from origin: ${origin}`);
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
 });
  
 app.get('/health', (_req, res) => {
