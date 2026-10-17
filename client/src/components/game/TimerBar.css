@@ -1,42 +1,67 @@
 .timer-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 140px;
+  gap: 12px;
+  min-width: 170px;
 }
 
 .timer-bar__track {
   flex: 1;
-  height: 8px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.08);
+  height: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--neo-gray-light);
+  border: var(--border-neo);
+  box-shadow: var(--shadow-xs);
   overflow: hidden;
+  position: relative;
 }
 
 .timer-bar__fill {
   height: 100%;
-  border-radius: var(--radius-full);
-  transition: width 1s linear, background var(--duration-normal) var(--ease-out);
+  border-radius: 2px;
+  transition: width 1s linear;
+  background-size: 20px 20px;
+  background-image: linear-gradient(
+    45deg,
+    rgba(18, 18, 18, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(18, 18, 18, 0.15) 50%,
+    rgba(18, 18, 18, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  animation: timerStripe 1s linear infinite;
+}
+
+@keyframes timerStripe {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 0; }
 }
 
 .timer-bar--green {
-  background: linear-gradient(90deg, #34d399, #10b981);
+  background-color: var(--neo-green);
 }
 
 .timer-bar--yellow {
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  background-color: var(--neo-yellow);
 }
 
 .timer-bar--red {
-  background: linear-gradient(90deg, #f87171, #ef4444);
-  animation: pulse 0.5s ease infinite;
+  background-color: var(--neo-red);
+  animation: timerStripe 0.6s linear infinite, neoPulse 0.6s ease infinite;
 }
 
 .timer-bar__time {
   font-family: var(--font-heading);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  min-width: 32px;
-  text-align: right;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--neo-black);
+  background: var(--neo-white);
+  padding: 4px 10px;
+  border: var(--border-neo-thin);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xs);
+  min-width: 44px;
+  text-align: center;
 }

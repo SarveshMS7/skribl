@@ -16,14 +16,15 @@ export default function WordChooser() {
 
   return (
     <div className="word-chooser__overlay">
-      <div className="word-chooser glass-strong">
+      <div className="word-chooser">
+        <span className="word-chooser__badge">🎨 Your Turn to Draw!</span>
         <h2 className="word-chooser__title">Choose a Word</h2>
-        <p className="word-chooser__subtitle">Pick a word to draw</p>
+        <p className="word-chooser__subtitle">Pick one secret word to sketch</p>
         <div className="word-chooser__cards">
           {wordChoices.map((word, i) => (
             <button
               key={word}
-              className="word-chooser__card"
+              className={`word-chooser__card word-chooser__card--${i % 3}`}
               onClick={() => handleChoose(word)}
               style={{ animationDelay: `${i * 0.1}s` }}
             >
@@ -31,9 +32,9 @@ export default function WordChooser() {
             </button>
           ))}
         </div>
-        <p className="word-chooser__timer-note">
-          Auto-selecting in 15 seconds...
-        </p>
+        <div className="word-chooser__timer-note">
+          ⏱️ Auto-selecting in 15 seconds...
+        </div>
       </div>
     </div>
   );

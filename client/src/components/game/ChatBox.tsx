@@ -24,15 +24,20 @@ export default function ChatBox() {
   const isDrawer = socket.id === gameState?.currentPlayerID;
 
   return (
-    <div className="chatbox glass">
+    <div className="chatbox">
+      <div className="chatbox__header">
+        <h3 className="chatbox__title">Live Guesses</h3>
+        <span className="neo-badge">💬 Chat</span>
+      </div>
+
       <div className="chatbox__messages">
         {messages.length === 0 && (
-          <p className="chatbox__empty">No messages yet. Start guessing!</p>
+          <p className="chatbox__empty">No guesses yet. Be the first!</p>
         )}
         {messages.map(msg => (
           <div key={msg.id} className={`chatbox__msg chatbox__msg--${msg.type}`}>
             {msg.type === 'system' ? (
-              <span className="chatbox__system">{msg.message}</span>
+              <span className="chatbox__system">📢 {msg.message}</span>
             ) : (
               <>
                 <span className="chatbox__name">{msg.playerName}:</span>
@@ -47,7 +52,7 @@ export default function ChatBox() {
       <form className="chatbox__form" onSubmit={handleSubmit}>
         <input
           className="input chatbox__input"
-          placeholder={isDrawer ? 'You are drawing...' : 'Type your guess...'}
+          placeholder={isDrawer ? 'You are drawing now...' : 'Type guess & press enter...'}
           value={text}
           onChange={e => setText(e.target.value)}
           disabled={isDrawer}
@@ -57,7 +62,7 @@ export default function ChatBox() {
           className="btn btn-primary chatbox__send"
           disabled={!text.trim() || isDrawer}
         >
-          Send
+          Send 🚀
         </button>
       </form>
     </div>

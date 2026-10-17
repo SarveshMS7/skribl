@@ -3,9 +3,9 @@ import { useGameStore } from '../../store/useGameStore';
 import './PlayerList.css';
 
 const AVATAR_COLORS = [
-  '#7c3aed', '#2563eb', '#0891b2', '#059669',
-  '#d97706', '#dc2626', '#db2777', '#7c3aed',
-  '#4f46e5', '#0d9488', '#ca8a04', '#e11d48',
+  '#ff577f', '#3b82f6', '#00f0ff', '#22e577',
+  '#ff914d', '#ff334b', '#8b5cf6', '#ffde59',
+  '#6366f1', '#14b8a6', '#f59e0b', '#ec4899',
 ];
 
 export default function PlayerList() {
@@ -19,8 +19,11 @@ export default function PlayerList() {
   });
 
   return (
-    <div className="player-list glass">
-      <h3 className="player-list__title">Scoreboard</h3>
+    <div className="player-list">
+      <div className="player-list__header">
+        <h3 className="player-list__title">Scoreboard</h3>
+        <span className="neo-badge">🏆 Rank</span>
+      </div>
       <ul className="player-list__items">
         {sortedPlayers.map((player, i) => {
           const isDrawer = player.id === gameState.currentPlayerID;

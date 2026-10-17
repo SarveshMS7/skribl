@@ -4,9 +4,9 @@ import { useGameStore, useGameDispatch } from '../../store/useGameStore';
 import './LobbyScreen.css';
 
 const AVATAR_COLORS = [
-  '#7c3aed', '#2563eb', '#0891b2', '#059669',
-  '#d97706', '#dc2626', '#db2777', '#7c3aed',
-  '#4f46e5', '#0d9488', '#ca8a04', '#e11d48',
+  '#ff577f', '#3b82f6', '#00f0ff', '#22e577',
+  '#ff914d', '#ff334b', '#8b5cf6', '#ffde59',
+  '#6366f1', '#14b8a6', '#f59e0b', '#ec4899',
 ];
 
 export default function LobbyScreen() {
@@ -23,7 +23,7 @@ export default function LobbyScreen() {
         <div className="bg-glow bg-glow--blue" />
         <div className="lobby__loading">
           <div className="lobby__spinner" />
-          <p>Connecting to room...</p>
+          <p>Connecting to Room...</p>
         </div>
       </div>
     );
@@ -63,28 +63,41 @@ export default function LobbyScreen() {
       <div className="lobby__container">
         {/* Header */}
         <div className="lobby__header">
-          <h1 className="lobby__title">Game Lobby</h1>
-          <div className="lobby__code-box glass" onClick={copyCode}>
+          <div className="lobby__title-wrap">
+            <h1 className="lobby__title">Game Lobby</h1>
+            <span className="lobby__title-badge">Ready!</span>
+          </div>
+
+          <div
+            className="lobby__code-box"
+            onClick={copyCode}
+            title="Click to copy room code"
+          >
             <span className="lobby__code-label">Room Code</span>
             <span className="lobby__code-value">{roomCode}</span>
-            <span className="lobby__code-copy">
-              {copied ? '✓ Copied!' : 'Click to copy'}
+            <span className={`lobby__code-copy ${copied ? 'lobby__code-copy--copied' : ''}`}>
+              {copied ? '✓ Copied to clipboard!' : '📋 Click to copy'}
             </span>
           </div>
         </div>
 
         <div className="lobby__content">
           {/* Player List */}
-          <div className="lobby__players glass">
-            <h2 className="lobby__section-title">
-              Players
+          <div className="lobby__players">
+            <div className="lobby__section-header">
+              <h2 className="lobby__section-title">Players</h2>
               <span className="lobby__player-count">
-                {room.players.length}/{room.settings.maxmembers}
+                {room.players.length} / {room.settings.maxmembers}
               </span>
-            </h2>
+            </div>
+
             <ul className="lobby__player-list">
               {room.players.map((player, i) => (
-                <li key={player.id} className="lobby__player" style={{ animationDelay: `${i * 0.08}s` }}>
+                <li
+                  key={player.id}
+                  className="lobby__player"
+                  style={{ animationDelay: `${i * 0.08}s` }}
+                >
                   <div
                     className="lobby__player-avatar"
                     style={{ background: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
@@ -101,12 +114,15 @@ export default function LobbyScreen() {
           </div>
 
           {/* Settings */}
-          <div className="lobby__settings glass">
-            <h2 className="lobby__section-title">Settings</h2>
+          <div className="lobby__settings">
+            <div className="lobby__section-header">
+              <h2 className="lobby__section-title">Match Settings</h2>
+              <span className="neo-badge">⚙️ Rules</span>
+            </div>
 
             <div className="lobby__setting">
               <label className="lobby__setting-label">
-                Draw Time
+                <span>⏱️ Draw Time</span>
                 <span className="lobby__setting-value">{room.settings.drawtime}s</span>
               </label>
               <input
@@ -123,7 +139,7 @@ export default function LobbyScreen() {
 
             <div className="lobby__setting">
               <label className="lobby__setting-label">
-                Rounds
+                <span>🔄 Total Rounds</span>
                 <span className="lobby__setting-value">{room.settings.rounds}</span>
               </label>
               <input
@@ -140,7 +156,7 @@ export default function LobbyScreen() {
 
             <div className="lobby__setting">
               <label className="lobby__setting-label">
-                Max Players
+                <span>👥 Max Players</span>
                 <span className="lobby__setting-value">{room.settings.maxmembers}</span>
               </label>
               <input
@@ -156,7 +172,7 @@ export default function LobbyScreen() {
             </div>
 
             {!isHost && (
-              <p className="lobby__settings-note">Only the host can change settings</p>
+              <p className="lobby__settings-note">🔒 Only the room host can adjust settings</p>
             )}
           </div>
         </div>
@@ -169,13 +185,13 @@ export default function LobbyScreen() {
               onClick={handleStartGame}
               disabled={!canStart}
             >
-              {canStart ? '🎮 Start Game' : `Need ${2 - room.players.length} more player(s)`}
+              {canStart ? '🎮 Start Game Now!' : `Need ${2 - room.players.length} More Player(s)`}
             </button>
           ) : (
-            <p className="lobby__waiting">Waiting for host to start the game...</p>
+            <p className="lobby__waiting">⏳ Waiting for host to start the game...</p>
           )}
           <button className="btn btn-secondary btn-sm" onClick={handleLeave}>
-            Leave Room
+            🚪 Leave Room
           </button>
         </div>
       </div>

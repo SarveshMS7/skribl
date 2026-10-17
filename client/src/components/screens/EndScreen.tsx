@@ -2,8 +2,8 @@ import { useGameStore, useGameDispatch } from '../../store/useGameStore';
 import { socket } from '../../services/socket/socket';
 import './EndScreen.css';
 
-const PODIUM_COLORS = ['#fbbf24', '#a7a3be', '#cd7c2f'];
-const PODIUM_LABELS = ['🥇', '🥈', '🥉'];
+const PODIUM_COLORS = ['#ffde59', '#00f0ff', '#ff914d'];
+const PODIUM_LABELS = ['🥇 1st', '🥈 2nd', '🥉 3rd'];
 
 export default function EndScreen() {
   const { gameState, room, roomCode } = useGameStore();
@@ -34,9 +34,10 @@ export default function EndScreen() {
       <div className="bg-glow bg-glow--blue" />
 
       <div className="end-screen__container">
-        <h1 className="end-screen__title">Game Over!</h1>
+        <span className="end-screen__badge">🏆 Match Finished!</span>
+        <h1 className="end-screen__title">Final Results</h1>
 
-        {/* Podium */}
+        {/* Neo 3D Podium */}
         <div className="end-screen__podium">
           {rankings.slice(0, 3).map((player, i) => (
             <div
@@ -44,14 +45,14 @@ export default function EndScreen() {
               className={`end-screen__podium-item end-screen__podium-item--${i + 1}`}
               style={{ animationDelay: `${i * 0.15}s` }}
             >
-              <span className="end-screen__medal">{PODIUM_LABELS[i]}</span>
+              <span className="end-screen__medal-badge">{PODIUM_LABELS[i]}</span>
               <div
                 className="end-screen__avatar"
                 style={{
                   background: PODIUM_COLORS[i],
-                  width: i === 0 ? 72 : 56,
-                  height: i === 0 ? 72 : 56,
-                  fontSize: i === 0 ? '1.6rem' : '1.2rem',
+                  width: i === 0 ? 80 : 64,
+                  height: i === 0 ? 80 : 64,
+                  fontSize: i === 0 ? '2rem' : '1.4rem',
                 }}
               >
                 {player.name.charAt(0).toUpperCase()}
@@ -61,8 +62,8 @@ export default function EndScreen() {
               <div
                 className="end-screen__bar"
                 style={{
-                  height: i === 0 ? 120 : i === 1 ? 90 : 60,
-                  background: PODIUM_COLORS[i],
+                  height: i === 0 ? 140 : i === 1 ? 100 : 70,
+                  backgroundColor: PODIUM_COLORS[i],
                 }}
               />
             </div>
@@ -71,23 +72,26 @@ export default function EndScreen() {
 
         {/* Full ranking */}
         {rankings.length > 3 && (
-          <div className="end-screen__full-list glass">
+          <div className="end-screen__full-list">
             {rankings.slice(3).map((player, i) => (
               <div key={player.id} className="end-screen__rank-row">
                 <span className="end-screen__rank-pos">#{i + 4}</span>
                 <span className="end-screen__rank-name">{player.name}</span>
-                <span className="end-screen__rank-score">{player.score}</span>
+                <span className="end-screen__rank-score">{player.score} pts</span>
               </div>
             ))}
           </div>
         )}
 
         <div className="end-screen__actions">
-          <button className="btn btn-primary btn-lg" onClick={handleBackToLobby}>
-            🔄 Back to Lobby
+          <button
+            className="btn btn-primary btn-lg end-screen__btn-play"
+            onClick={handleBackToLobby}
+          >
+            🔄 Play Again!
           </button>
           <button className="btn btn-secondary btn-sm" onClick={handleLeave}>
-            Leave
+            🚪 Leave to Main Menu
           </button>
         </div>
       </div>

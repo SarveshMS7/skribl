@@ -1,21 +1,40 @@
 .player-list {
-  padding: 16px;
+  padding: 18px 16px;
+  background: var(--neo-white);
+  border: var(--border-neo-thick);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.player-list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border-neo);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .player-list__title {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  color: var(--neo-black);
 }
 
 .player-list__items {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 2px;
+  flex: 1;
 }
 
 .player-list__item {
@@ -24,40 +43,61 @@
   gap: 10px;
   padding: 8px 10px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.02);
-  transition: background var(--duration-fast) var(--ease-out);
+  background: var(--neo-cream);
+  border: var(--border-neo-thin);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.player-list__item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .player-list__item--me {
-  background: rgba(124, 58, 237, 0.08);
-  border-left: 3px solid var(--accent-primary);
+  background: #fff0f5;
+  border-color: var(--neo-black);
+  box-shadow: 3px 3px 0px var(--neo-pink);
 }
 
 .player-list__item--drawer {
-  background: rgba(245, 158, 11, 0.08);
+  background: #fffbeb;
+  border-color: var(--neo-black);
+  box-shadow: 3px 3px 0px var(--neo-yellow);
 }
 
 .player-list__item--guessed {
-  background: rgba(16, 185, 129, 0.08);
+  background: #ecfdf5;
+  border-color: var(--neo-black);
+  box-shadow: 3px 3px 0px var(--neo-green);
 }
 
 .player-list__rank {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  min-width: 22px;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--neo-black);
+  background: var(--neo-white);
+  padding: 2px 6px;
+  border: 1.5px solid var(--neo-black);
+  border-radius: var(--radius-xs);
+  min-width: 26px;
+  text-align: center;
 }
 
 .player-list__avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  border: 2px solid var(--neo-black);
+  box-shadow: var(--shadow-xs);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.8rem;
-  color: white;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
@@ -69,47 +109,57 @@
 }
 
 .player-list__name {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--neo-black);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .player-list__you {
-  font-size: 0.7rem;
-  color: var(--accent-secondary);
-  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--neo-pink);
+  font-weight: 900;
 }
 
 .player-list__indicators {
   display: flex;
-  gap: 6px;
+  gap: 4px;
+  margin-top: 2px;
 }
 
 .player-list__badge {
+  font-family: var(--font-heading);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 900;
   padding: 1px 6px;
   border-radius: var(--radius-full);
+  border: 1.5px solid var(--neo-black);
+  text-transform: uppercase;
 }
 
 .player-list__badge--drawer {
-  color: var(--text-warning);
-  background: rgba(251, 191, 36, 0.12);
+  color: var(--neo-black);
+  background: var(--neo-yellow);
 }
 
 .player-list__badge--guessed {
-  color: var(--text-success);
-  background: rgba(52, 211, 153, 0.12);
+  color: var(--neo-black);
+  background: var(--neo-green);
 }
 
 .player-list__score {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--accent-secondary);
-  min-width: 36px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--neo-black);
+  background: var(--neo-white);
+  padding: 2px 8px;
+  border: var(--border-neo-thin);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xs);
+  min-width: 42px;
   text-align: right;
 }

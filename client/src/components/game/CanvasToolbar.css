@@ -3,6 +3,9 @@
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
+  background: var(--neo-white);
+  border: var(--border-neo-thick);
+  box-shadow: var(--shadow-md);
   border-radius: var(--radius-lg);
   flex-wrap: wrap;
   justify-content: center;
@@ -13,13 +16,13 @@
 .canvas-toolbar__group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .canvas-toolbar__divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border-glass);
+  width: 2px;
+  height: 28px;
+  background: var(--neo-black);
 }
 
 /* Tool Buttons */
@@ -27,42 +30,56 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-glass);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  border: var(--border-neo-thin);
+  background: var(--neo-cream);
+  color: var(--neo-black);
+  font-family: var(--font-heading);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--duration-fast) var(--ease-spring);
+  text-transform: uppercase;
 }
 
 .canvas-toolbar__btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-sm);
+  background: var(--neo-white);
+}
+
+.canvas-toolbar__btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: none;
 }
 
 .canvas-toolbar__btn.active {
-  background: var(--accent-primary);
-  color: #ffffff;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 12px rgba(108, 92, 231, 0.4);
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+  border-color: var(--neo-black);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--neo-black);
 }
 
 .canvas-toolbar__btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  transform: none !important;
 }
 
 .canvas-toolbar__btn--action {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--neo-cyan);
 }
 
-.canvas-toolbar__btn--danger:hover {
-  background: var(--accent-danger);
-  border-color: var(--accent-danger);
+.canvas-toolbar__btn--danger {
+  background: var(--neo-red);
   color: #ffffff;
+}
+
+.canvas-toolbar__btn--danger:hover:not(:disabled) {
+  background: #ff4757;
 }
 
 /* Sizes */
@@ -73,31 +90,34 @@
 }
 
 .canvas-toolbar__size-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--border-glass);
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  border: var(--border-neo-thin);
+  background: var(--neo-white);
+  box-shadow: var(--shadow-xs);
   cursor: pointer;
-  transition: all var(--duration-fast);
+  transition: all var(--duration-fast) var(--ease-spring);
 }
 
 .canvas-toolbar__size-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .canvas-toolbar__size-btn.active {
-  border-color: var(--accent-secondary);
-  box-shadow: 0 0 8px rgba(0, 206, 201, 0.4);
-  background: rgba(0, 206, 201, 0.2);
+  background: var(--neo-yellow);
+  border-color: var(--neo-black);
+  box-shadow: 1px 1px 0px var(--neo-black);
+  transform: translate(1px, 1px);
 }
 
 .canvas-toolbar__size-dot {
   display: block;
-  background: var(--text-primary);
+  background: var(--neo-black);
   border-radius: 50%;
   max-width: 18px;
   max-height: 18px;
@@ -105,7 +125,7 @@
 
 .canvas-toolbar__slider {
   width: 70px;
-  accent-color: var(--accent-secondary);
+  accent-color: var(--neo-pink);
   cursor: pointer;
 }
 
@@ -123,37 +143,46 @@
 }
 
 .canvas-toolbar__color-swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--neo-black);
+  box-shadow: 1px 1px 0px var(--neo-black);
   cursor: pointer;
-  transition: transform var(--duration-fast);
+  transition: transform var(--duration-fast) var(--ease-spring);
 }
 
 .canvas-toolbar__color-swatch:hover {
-  transform: scale(1.2);
-  z-index: 2;
+  transform: scale(1.3) translateY(-2px);
+  z-index: 5;
+  box-shadow: var(--shadow-xs);
 }
 
 .canvas-toolbar__color-swatch.active {
-  transform: scale(1.25);
-  box-shadow: 0 0 0 2px var(--accent-primary), 0 0 8px rgba(255, 255, 255, 0.5);
-  z-index: 3;
+  transform: scale(1.35) translateY(-3px);
+  border: 2px solid var(--neo-black);
+  box-shadow: 2px 2px 0px var(--neo-black);
+  z-index: 6;
 }
 
 .canvas-toolbar__color-picker {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border-glass);
-  background: rgba(255, 255, 255, 0.1);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: var(--border-neo-thin);
+  background: var(--neo-yellow);
+  box-shadow: var(--shadow-xs);
   cursor: pointer;
   position: relative;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  transition: transform var(--duration-fast);
+}
+
+.canvas-toolbar__color-picker:hover {
+  transform: scale(1.1);
 }
 
 .canvas-toolbar__color-picker input[type='color'] {

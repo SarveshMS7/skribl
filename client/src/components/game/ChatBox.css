@@ -5,6 +5,28 @@
   min-height: 0;
   padding: 0;
   overflow: hidden;
+  background: var(--neo-white);
+  border: var(--border-neo-thick);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-xl);
+}
+
+.chatbox__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: var(--border-neo);
+  background: var(--neo-cream);
+}
+
+.chatbox__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--neo-black);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .chatbox__messages {
@@ -13,80 +35,111 @@
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  background: var(--neo-white);
 }
 
 .chatbox__empty {
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* ── Message ────────────────────────────────────────────── */
-.chatbox__msg {
-  padding: 5px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  line-height: 1.4;
-  animation: fadeIn var(--duration-fast) var(--ease-out);
-}
-
-.chatbox__msg--chat {
-  background: transparent;
-}
-
-.chatbox__msg--correct {
-  background: rgba(16, 185, 129, 0.12);
-  border-left: 3px solid var(--text-success);
-  animation: correctFlash 1s ease both;
-}
-
-.chatbox__msg--system {
-  background: rgba(124, 58, 237, 0.1);
-  border-left: 3px solid var(--accent-primary);
-  font-style: italic;
-}
-
-.chatbox__name {
+  color: var(--neo-muted);
+  font-family: var(--font-heading);
   font-weight: 700;
-  margin-right: 6px;
-  color: var(--accent-secondary);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 24px;
 }
 
-.chatbox__msg--correct .chatbox__name {
-  color: var(--text-success);
-}
-
-.chatbox__text {
-  color: var(--text-primary);
+/* ── Message Popups ───────────────────────────────────────── */
+.chatbox__msg {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  animation: scaleIn var(--duration-fast) var(--ease-spring);
   word-break: break-word;
 }
 
-.chatbox__msg--correct .chatbox__text {
-  color: var(--text-success);
+.chatbox__msg--chat {
+  background: var(--neo-cream);
+  border: 1.5px solid var(--neo-black);
+  box-shadow: var(--shadow-xs);
+}
+
+.chatbox__msg--correct {
+  background: var(--neo-green);
+  border: var(--border-neo-thin);
+  box-shadow: var(--shadow-xs);
+  color: var(--neo-black);
+  animation: correctFlash 0.6s var(--ease-spring) both;
+}
+
+.chatbox__msg--system {
+  background: #ede9fe;
+  border: 1.5px solid var(--neo-black);
+  box-shadow: var(--shadow-xs);
+  color: #5b21b6;
+  font-style: normal;
+}
+
+.chatbox__name {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  margin-right: 6px;
+  color: var(--neo-black);
+}
+
+.chatbox__msg--correct .chatbox__name {
+  color: var(--neo-black);
+}
+
+.chatbox__text {
   font-weight: 600;
+  color: var(--neo-black);
+}
+
+.chatbox__msg--correct .chatbox__text {
+  color: var(--neo-black);
+  font-weight: 900;
 }
 
 .chatbox__system {
-  color: var(--accent-secondary);
-  font-weight: 500;
+  font-family: var(--font-heading);
+  color: #4c1d95;
+  font-weight: 800;
 }
 
-/* ── Form ───────────────────────────────────────────────── */
+/* ── Chat Input Form ──────────────────────────────────────── */
 .chatbox__form {
   display: flex;
   gap: 8px;
   padding: 10px 12px;
-  border-top: 1px solid var(--glass-border);
+  border-top: var(--border-neo);
+  background: var(--neo-cream);
 }
 
 .chatbox__input {
   flex: 1;
   padding: 10px 14px;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  border: var(--border-neo-thin);
+  box-shadow: var(--shadow-xs);
+}
+
+.chatbox__input:focus {
+  transform: none;
+  box-shadow: var(--shadow-sm);
 }
 
 .chatbox__send {
   flex-shrink: 0;
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+  border: var(--border-neo-thin);
+  box-shadow: var(--shadow-xs);
+  padding: 8px 16px;
+}
+
+.chatbox__send:hover:not(:disabled) {
+  background: #ffe366;
+  box-shadow: var(--shadow-sm);
 }

@@ -5,68 +5,119 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(18, 18, 18, 0.75);
+  backdrop-filter: blur(4px);
   animation: fadeIn var(--duration-fast) var(--ease-out);
 }
 
 .word-chooser {
-  padding: 40px;
-  max-width: 480px;
-  width: 90%;
+  padding: 40px 32px;
+  max-width: 520px;
+  width: 92%;
   text-align: center;
+  background: var(--neo-cream);
+  border: var(--border-neo-thick);
+  box-shadow: var(--shadow-xl);
+  border-radius: var(--radius-xl);
   animation: scaleIn var(--duration-normal) var(--ease-spring);
+  position: relative;
+}
+
+.word-chooser__badge {
+  display: inline-block;
+  background: var(--neo-pink);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 4px 14px;
+  border: var(--border-neo-thin);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xs);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  transform: rotate(-2deg);
 }
 
 .word-chooser__title {
-  font-size: 1.8rem;
-  font-weight: 800;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--neo-black);
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
 }
 
 .word-chooser__subtitle {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: var(--neo-muted);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
   margin-top: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .word-chooser__cards {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   justify-content: center;
 }
 
 .word-chooser__card {
   flex: 1;
-  padding: 20px 16px;
+  padding: 24px 14px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-  font-size: 1.1rem;
-  font-weight: 700;
+  border: var(--border-neo-thick);
+  box-shadow: var(--shadow-md);
+  color: var(--neo-black);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 900;
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   transition: all var(--duration-fast) var(--ease-spring);
   animation: fadeInUp var(--duration-normal) var(--ease-spring) both;
 }
 
+.word-chooser__card--0 {
+  background: var(--neo-yellow);
+}
+
+.word-chooser__card--1 {
+  background: var(--neo-cyan);
+}
+
+.word-chooser__card--2 {
+  background: var(--neo-pink);
+  color: #ffffff;
+}
+
 .word-chooser__card:hover {
-  background: rgba(124, 58, 237, 0.15);
-  border-color: var(--accent-primary);
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: var(--shadow-glow);
+  transform: translateY(-8px) scale(1.04) rotate(-1deg);
+  box-shadow: var(--shadow-xl);
 }
 
 .word-chooser__card:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: var(--shadow-xs);
 }
 
 .word-chooser__timer-note {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-top: 20px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--neo-black);
+  background: var(--neo-white);
+  padding: 6px 14px;
+  border: var(--border-neo-thin);
+  box-shadow: var(--shadow-xs);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 500px) {
+  .word-chooser__cards {
+    flex-direction: column;
+  }
 }
